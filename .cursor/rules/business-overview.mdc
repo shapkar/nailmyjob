@@ -1,0 +1,357 @@
+---
+description: NailMyJob Business Overview & Design System
+globs: **/*
+alwaysApply: true
+---
+
+# NailMyJob - Business Overview
+
+## What is NailMyJob?
+
+NailMyJob is a mobile-first web application for residential contractors (kitchen/bath remodelers, general contractors) that solves **margin leakage from undocumented scope changes**. Nail every job.
+
+**Domain**: nailmyjob.com
+
+### The Problem We Solve
+
+Contractors lose 10-15% of project margins due to:
+- Verbal agreements that become disputes
+- Undocumented change orders eaten as costs
+- Time wasted on paperwork instead of building
+- Unprofessional-looking quotes that hurt close rates
+
+### Our Solution
+
+Voice-powered quoting and change order capture that gets legally-binding signatures in under 2 minutes, on-site.
+
+---
+
+## MVP Features
+
+### 1. Voice-to-Quote System
+- Create professional quotes in under 5 minutes via voice input
+- AI transcription (Deepgram/AssemblyAI) and parsing (OpenAI/Claude)
+- Auto-categorization of line items
+- Markup application (labor/material percentages)
+- Branded PDF generation
+- Digital signatures from homeowners via magic links
+
+### 2. Voice-to-Change-Order System
+- Convert verbal scope changes into signed contracts in under 2 minutes
+- AI-generated descriptions with price adjustments
+- Timeline impact tracking
+- Legal boilerplate from company settings
+- On-site digital signatures
+
+### 3. Digital Signature System
+- ESIGN Act compliant signatures
+- Magic link access (no login required for clients)
+- Captures: timestamp, IP address, signer email, geolocation
+- Mobile-optimized signature pad
+- Tamper-proof PDF generation
+
+### 4. Company Profile & Settings
+- Company information (name, logo, license number)
+- Default markup percentages
+- Legal boilerplate templates
+- Payment terms and conditions
+
+### 5. Client Portal
+- Magic link access for homeowners
+- View quote details and line items
+- Review and sign quotes
+- View and sign pending change orders
+- See project totals with change order impacts
+
+---
+
+## Technical Architecture
+
+### Stack
+- **Backend**: Ruby on Rails 8.x (monolith)
+- **Frontend**: Hotwire (Turbo + Stimulus), TailwindCSS
+- **Database**: PostgreSQL
+- **Background Jobs**: Sidekiq + Redis
+- **File Storage**: Active Storage (S3/GCP in production)
+- **Authentication**: Devise (contractors only)
+- **PDF Generation**: Prawn or Wicked PDF
+- **Deployment**: Docker + Kamal on Hetzner VPS
+
+### External APIs
+- **Voice-to-Text**: Deepgram or AssemblyAI
+- **AI/NLP**: OpenAI GPT-4 or Anthropic Claude
+- **Email**: Mailgun
+- **SMS** (future): Twilio
+
+### Key Models
+- `User` - Contractor accounts (Devise)
+- `Company` - Contractor's business (has_one through user)
+- `Client` - Homeowner contacts
+- `Quote` - Project estimates with line items (before acceptance)
+- `Job` - Active project (created when quote is signed/accepted)
+- `LineItem` - Individual quote items (category, price range, allowance flag)
+- `ChangeOrder` - Scope changes with signature capture (belongs to Job)
+- `VoiceSession` - Audio recordings and transcriptions
+
+### Quote vs Job Flow
+1. **Quote** = Estimate/proposal phase
+   - Statuses: draft → sent → viewed → accepted/rejected/expired
+   - Client reviews and signs the quote
+   - When quote is signed → Job is created automatically
+
+2. **Job** = Active project phase
+   - Statuses: active, on_hold, completed, cancelled
+   - Change orders are created on jobs (not quotes)
+   - Tracks current total including all signed change orders
+
+---
+
+## UI/UX Design Philosophy
+
+### Inspired by Basecamp & Jason Fried
+
+We follow the Basecamp design philosophy:
+- **Simplicity over features** - Every screen does one thing well
+- **Human, warm design** - Not cold corporate software
+- **Big, readable typography** - 18px base font size
+- **Clear hierarchy** - You always know what's important
+- **Mobile-first** - Contractors use this on job sites
+- **PWA Ready** - Installable and app-like experience
+
+### Design Patterns
+
+#### Split Cards (Line Items)
+- **Concept**: Clear visual separation between "What" (Description) and "How Much" (Cost)
+- **Layout**: Left side (White) for description/allowance, Right side (Stone-50) for pricing/details
+- **Inputs**: Large, robust text fields with clear focus states
+- **Controls**: Big, tappable switches for "Allowance" and "Range Mode"
+
+#### Action Bars
+- Sticky headers for primary actions
+- Scrollable horizontal lists for buttons on mobile
+- "Pill" style buttons for secondary actions
+
+### Design Principles
+1. **No clutter** - Remove everything that isn't essential
+2. **Big tap targets** - Buttons and inputs are easy to hit on mobile
+3. **Clear actions** - Primary actions are obvious, secondary are subtle
+4. **Warm colors** - Paper-like backgrounds, not sterile white
+5. **Friendly copy** - "Good morning, John" not "Welcome, User"
+
+---
+
+## Color Palette & Styling
+
+### Colors
+```css
+--color-page-bg: #f9f8f4;        /* Warm paper background */
+--color-card-bg: #ffffff;         /* White cards */
+--color-text-main: #222222;       /* Near-black text */
+--color-text-muted: #666666;      /* Secondary text */
+--color-primary: #2d8a6e;         /* Deep emerald (buttons, links) */
+--color-primary-dark: #1f6b54;    /* Hover state */
+--color-border: #e6e4dc;          /* Card borders */
+--color-input-border: #dcdad1;    /* Form input borders */
+```
+
+### Typography
+- **Font**: System font stack (-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto...)
+- **Base size**: 18px (larger than typical for readability)
+- **Headings**: font-weight: 900, letter-spacing: -0.02em
+
+### Components
+
+#### Buttons
+```html
+<!-- Primary (pill shape, emerald) -->
+<button class="btn-primary">Save changes</button>
+
+<!-- Secondary (white with border) -->
+<button class="btn-secondary">Cancel</button>
+```
+
+#### Cards
+```html
+<div class="bg-white rounded-xl border border-stone-200">
+  <div class="px-5 py-4 border-b border-stone-100">
+    <h2 class="font-bold text-stone-900">Section Title</h2>
+  </div>
+  <div class="p-5">
+    <!-- Content -->
+  </div>
+</div>
+```
+
+#### Form Inputs
+- Large padding (0.875rem 1rem)
+- 2px solid border
+- Rounded corners (0.75rem)
+- Focus state: emerald border + subtle shadow
+
+#### Status Badges
+```html
+<span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Sent</span>
+<span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Accepted</span>
+<span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-stone-100 text-stone-500">Draft</span>
+```
+
+---
+
+## Page Layouts & Container Widths
+
+### Consistent Widths
+- **List/Dashboard pages**: `max-w-3xl` (768px) - Dashboard, Quotes index, Clients index
+- **Detail pages**: `max-w-3xl` or `max-w-4xl` (896px for pages with sidebars)
+- **Form/Settings pages**: `max-w-2xl` (672px) - Company settings, Edit profile
+- **Edit pages with complex forms**: `max-w-5xl` (1024px) - Quote editor
+
+### Page Structure
+```erb
+<div class="max-w-3xl mx-auto pb-20">
+  <header class="mb-8">
+    <h1 class="text-3xl sm:text-4xl mb-2">Page Title</h1>
+    <p class="text-stone-500">Helpful subtitle</p>
+  </header>
+  
+  <!-- Content -->
+</div>
+```
+
+### Navigation Tabs (Pill Style)
+```erb
+<nav class="flex items-center gap-1 mb-6 bg-stone-100 p-1 rounded-xl w-fit">
+  <%= link_to "All", path, class: "px-4 py-2 rounded-lg text-sm font-bold #{active ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500'}" %>
+  <!-- More tabs -->
+</nav>
+```
+
+---
+
+## Key Stimulus Controllers
+
+- `dropdown_controller.js` - User menu, action menus
+- `clipboard_controller.js` - Copy client portal links
+- `voice_recorder_controller.js` - Audio recording for quotes/change orders
+- `signature_controller.js` - Signature pad capture
+- `client_search_controller.js` - Autocomplete client selection
+- `quote_form_controller.js` - Dynamic line item management
+- `flash_controller.js` - Auto-dismissing notifications
+- `line_item_controller.js` - Line item range/allowance toggles
+- `nested_form_controller.js` - Add/remove nested form items
+
+---
+
+## Deployment Architecture
+
+### Infrastructure
+- **Server**: Hetzner Cloud VPS (CX21 or higher)
+- **Reverse Proxy**: Caddy (automatic SSL)
+- **Containers**: Docker + docker-compose
+- **Deployment**: Kamal or manual docker-compose
+- **CI/CD**: GitHub Actions
+
+### Environment Variables
+All secrets stored in Bitwarden and pulled via `scripts/pull-secrets.sh`:
+- `RAILS_MASTER_KEY`
+- `DATABASE_URL`
+- `REDIS_URL`
+- `MAILGUN_API_KEY`, `MAILGUN_DOMAIN`
+- `DEEPGRAM_API_KEY` or `ASSEMBLYAI_API_KEY`
+- `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_BUCKET`
+
+See `docs/ENVIRONMENT_VARIABLES.md` for full list.
+
+---
+
+## File Organization
+
+```
+app/
+├── controllers/
+│   ├── api/v1/          # JSON API for mobile (future)
+│   ├── portal/          # Client portal (magic link access)
+│   └── *.rb             # Main contractor-facing controllers
+├── models/
+├── services/
+│   ├── voice_transcription_service.rb
+│   ├── voice_extraction_service.rb
+│   ├── quote_pdf_generator.rb
+│   └── change_order_pdf_generator.rb
+├── jobs/
+│   ├── voice_processing_job.rb
+│   ├── quote_pdf_generator_job.rb
+│   └── change_order_pdf_generator_job.rb
+├── views/
+│   ├── layouts/
+│   │   ├── application.html.erb  # Main contractor layout
+│   │   └── portal.html.erb       # Client portal layout
+│   ├── portal/                   # Client-facing views
+│   └── *.html.erb               # Contractor views
+└── javascript/controllers/       # Stimulus controllers
+```
+
+---
+
+## Testing
+
+- **Framework**: RSpec
+- **Factories**: FactoryBot (see `spec/factories/`)
+- **Run tests**: `bundle exec rspec`
+- **CI**: GitHub Actions runs tests on every push
+
+---
+
+## Common Patterns
+
+### Turbo Streams for Real-time Updates
+```ruby
+# In controller
+respond_to do |format|
+  format.turbo_stream
+  format.html { redirect_to quotes_path }
+end
+```
+
+### Service Objects
+```ruby
+# app/services/voice_extraction_service.rb
+class VoiceExtractionService
+  def initialize(transcript:, template_type:)
+    @transcript = transcript
+    @template_type = template_type
+  end
+
+  def call
+    # AI extraction logic
+  end
+end
+```
+
+### Background Jobs
+```ruby
+# Enqueue
+VoiceProcessingJob.perform_later(voice_session)
+
+# Job processes audio, updates via Turbo Stream
+```
+
+---
+
+## Brand
+
+- **Name**: NailMyJob
+- **Domain**: nailmyjob.com
+- **Tagline**: "Nail every job."
+- **Meaning**: Construction-adjacent (nails), plus "nailed it!" = success
+- **Demo email**: demo@nailmyjob.com
+
+---
+
+## Remember
+
+1. **Mobile-first** - Always test on mobile viewport
+2. **Warm, human design** - Use stone colors, friendly copy
+3. **Big inputs, big buttons** - Easy to use on job sites
+4. **Fast** - Contractors don't have time to wait
+5. **Simple** - If it needs explanation, simplify it

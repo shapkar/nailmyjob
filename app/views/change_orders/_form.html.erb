@@ -1,0 +1,135 @@
+<%# local_assigns: change_order, job %>
+<%= form_with model: [job, change_order], class: "space-y-6", data: { controller: "change-order-form" } do |f| %>
+  <% if change_order.errors.any? %>
+    <div class="card p-5 border-l-4 border-red-400 bg-red-50">
+      <p class="font-bold text-red-800 mb-2">Please fix the following errors:</p>
+      <ul class="list-disc list-inside text-sm text-red-600">
+        <% change_order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Main Details %>
+  <div class="bg-white rounded-xl border border-stone-200">
+    <div class="px-5 py-4 border-b border-stone-100">
+      <h2 class="font-bold text-stone-900">Change Order Details</h2>
+    </div>
+    <div class="p-5 space-y-5">
+      <div>
+        <label class="block text-sm font-bold text-stone-700 mb-1">Description</label>
+        <%= f.text_area :description, 
+            rows: 3, 
+            placeholder: "Describe the scope change..." %>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Category</label>
+          <%= f.select :category, 
+              ChangeOrder.categories.keys.map { |c| [c.titleize, c] },
+              {} %>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Amount</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none">$</span>
+            <%= f.number_field :amount, 
+                step: 0.01, 
+                class: "!pl-7",
+                placeholder: "0.00" %>
+          </div>
+          <p class="text-xs text-stone-400 mt-1">Use negative for credits</p>
+        </div>
+      </div>
+
+      <% if job.quote.line_items.any? %>
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Related Line Item (optional)</label>
+          <%= f.select :line_item_id, 
+              [["None", nil]] + job.quote.line_items.map { |li| ["#{li.category.to_s.titleize}: #{li.description}", li.id] },
+              {} %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Schedule Impact %>
+  <div class="bg-white rounded-xl border border-stone-200">
+    <div class="px-5 py-4 border-b border-stone-100">
+      <h2 class="font-bold text-stone-900">Schedule Impact</h2>
+    </div>
+    <div class="p-5 space-y-4">
+      <label class="group flex items-center gap-3 px-3 py-2 rounded-full has-[:checked]:bg-amber-50 has-[:checked]:text-amber-800 cursor-pointer">
+        <%= f.check_box :delays_schedule, 
+            class: "w-5 h-5 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500",
+            data: { action: "change->change-order-form#toggleDelay" } %>
+        <span class="text-stone-700 group-has-[:checked]:text-amber-800">This change affects the project schedule</span>
+      </label>
+
+      <div data-change-order-form-target="delayFields" class="<%= 'hidden' unless change_order.delays_schedule %>">
+        <div class="mt-4">
+          <label class="block text-sm font-bold text-stone-700 mb-1">Additional Days</label>
+          <%= f.number_field :delay_days, 
+              min: 0, 
+              placeholder: "0" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Time & Materials Option %>
+  <div class="bg-white rounded-xl border border-stone-200">
+    <div class="px-5 py-4 border-b border-stone-100">
+      <h2 class="font-bold text-stone-900">Billing Type</h2>
+    </div>
+    <div class="p-5 space-y-4">
+      <label class="group flex items-center gap-3 px-3 py-2 rounded-full has-[:checked]:bg-amber-50 has-[:checked]:text-amber-800 cursor-pointer">
+        <%= f.check_box :is_time_and_materials, 
+            class: "w-5 h-5 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500",
+            data: { action: "change->change-order-form#toggleTM" } %>
+        <span class="text-stone-700 group-has-[:checked]:text-amber-800">Bill as Time & Materials</span>
+      </label>
+
+      <div data-change-order-form-target="tmFields" class="<%= 'hidden' unless change_order.is_time_and_materials %>">
+        <div class="mt-4">
+          <label class="block text-sm font-bold text-stone-700 mb-1">Hourly Rate</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none">$</span>
+            <%= f.number_field :hourly_rate, 
+                min: 0, 
+                step: 0.01,
+                class: "!pl-7",
+                placeholder: "0.00" %>
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400">/hr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Legal Boilerplate %>
+  <div class="bg-white rounded-xl border border-stone-200">
+    <div class="px-5 py-4 border-b border-stone-100">
+      <h2 class="font-bold text-stone-900">Terms & Conditions</h2>
+    </div>
+    <div class="p-5">
+      <%= f.text_area :legal_boilerplate, 
+          rows: 4, 
+          placeholder: "Legal terms for this change order..." %>
+    </div>
+  </div>
+
+  <%# Actions %>
+  <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4">
+    <% if change_order.persisted? %>
+      <%= link_to "Cancel", job_change_order_path(job, change_order), class: "btn-secondary text-center" %>
+    <% else %>
+      <%= link_to "Cancel", job_path(job), class: "btn-secondary text-center" %>
+    <% end %>
+    
+    <%= f.submit change_order.persisted? ? "Save Changes" : "Create Change Order", 
+        class: "btn-primary cursor-pointer text-center" %>
+  </div>
+<% end %>

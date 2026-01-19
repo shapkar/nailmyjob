@@ -1,0 +1,51 @@
+<%# local_assigns: quote %>
+<%= link_to quote, class: "block px-4 py-4 hover:bg-slate-50 transition-colors" do %>
+  <div class="flex items-start gap-4">
+    <%# Icon based on template type %>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 <%= quote.kitchen? ? 'bg-amber-100 text-amber-600' : quote.bathroom? ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-600' %>">
+      <% if quote.kitchen? %>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+      <% elsif quote.bathroom? %>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+        </svg>
+      <% else %>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+      <% end %>
+    </div>
+
+    <%# Quote Details %>
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center gap-2 mb-1">
+        <h3 class="font-medium text-slate-900 truncate"><%= quote.client&.name || "No client" %></h3>
+        <%= render "quotes/status_badge", quote: quote %>
+      </div>
+      <p class="text-sm text-slate-500 truncate">
+        <%= quote.template_type.to_s.titleize %> Remodel • <%= quote.quote_number %>
+      </p>
+      <p class="text-sm text-slate-500 truncate mt-0.5">
+        <%= quote.project_full_address.presence || "No address" %>
+      </p>
+    </div>
+
+    <%# Amount and Date %>
+    <div class="text-right shrink-0">
+      <p class="font-semibold text-slate-900"><%= quote.total_range %></p>
+      <p class="text-sm text-slate-500"><%= quote.created_at.strftime("%b %d, %Y") %></p>
+      <% if quote.job&.change_orders&.signed&.any? %>
+        <p class="text-sm text-emerald-600 font-medium mt-1">
+          📝 +<%= number_to_currency(quote.job.change_orders_total, precision: 0) %>
+        </p>
+      <% end %>
+    </div>
+
+    <%# Chevron %>
+    <svg class="w-5 h-5 text-slate-400 shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+  </div>
+<% end %>

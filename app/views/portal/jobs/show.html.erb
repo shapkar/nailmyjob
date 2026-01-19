@@ -1,0 +1,160 @@
+<% content_for :title, "Your Project - #{@company.name}" %>
+
+<div class="space-y-8">
+  <%# Header %>
+  <header class="text-center">
+    <p class="text-stone-400 text-sm font-medium uppercase tracking-wider mb-2">Active Project</p>
+    <h1 class="text-3xl sm:text-4xl mb-2"><%= @job.quote.template_type.to_s.titleize %> Remodel</h1>
+    <p class="text-stone-500">Job #<%= @job.job_number %></p>
+  </header>
+
+  <%# Status Banner %>
+  <div class="bg-white rounded-2xl p-6 text-center border border-stone-200">
+    <% if @job.completed? %>
+      <div class="inline-flex items-center gap-2 text-emerald-700 font-bold">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        Project Completed
+      </div>
+      <p class="text-stone-500 mt-2">Completed on <%= @job.actual_completion_date&.strftime("%B %d, %Y") %></p>
+    <% elsif @job.on_hold? %>
+      <div class="inline-flex items-center gap-2 text-amber-700 font-bold">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        Project On Hold
+      </div>
+    <% elsif @job.active? %>
+      <div class="inline-flex items-center gap-2 text-emerald-700 font-bold">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        Project In Progress
+      </div>
+      <% if @job.start_date %>
+        <p class="text-stone-500 mt-2">Started <%= @job.start_date.strftime("%B %d, %Y") %> · <%= @job.days_active %> days active</p>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Current Total %>
+  <div class="rounded-2xl p-8 sm:p-10 text-center bg-white border border-stone-200 shadow-sm">
+    <p class="text-stone-400 font-medium text-sm mb-4">Current project total</p>
+    <p class="text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-2">
+      <%= @job.current_total_range %>
+    </p>
+    <% if @job.change_orders_total.to_i > 0 %>
+      <p class="text-stone-500 text-sm">
+        Original: <%= @job.contracted_range %> + <%= number_to_currency(@job.change_orders_total, precision: 0) %> in change orders
+      </p>
+    <% else %>
+      <p class="text-stone-500 text-sm">Based on your signed contract</p>
+    <% end %>
+  </div>
+
+  <%# Change Orders Section %>
+  <section class="max-w-2xl mx-auto">
+    <h2 class="text-2xl text-center mb-6">Change Orders</h2>
+    
+    <% if @change_orders.any? %>
+      <%# Pending Change Orders %>
+      <% if @pending_change_orders.any? %>
+        <div class="mb-6">
+          <p class="text-sm font-medium text-amber-600 uppercase tracking-wide mb-4 flex items-center justify-center gap-2">
+            <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+            Requires Your Signature
+          </p>
+          
+          <div class="space-y-4">
+            <% @pending_change_orders.each do |co| %>
+              <div class="bg-white rounded-xl border-2 border-amber-200 p-6">
+                <div class="flex items-start justify-between gap-4 mb-4">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Change Order #<%= co.co_number %></p>
+                    <p class="text-lg font-medium text-stone-900"><%= co.description %></p>
+                  </div>
+                  <p class="text-xl font-bold <%= co.amount.positive? ? 'text-emerald-600' : 'text-red-600' %>">
+                    <%= co.formatted_amount %>
+                  </p>
+                </div>
+                
+                <% if co.delays_schedule && co.delay_days.present? %>
+                  <p class="text-sm text-amber-700 mb-4">
+                    ⏱ Adds <%= co.delay_days %> days to timeline
+                  </p>
+                <% end %>
+                
+                <%= link_to portal_change_order_signature_path(co.client_view_token), class: "btn-primary w-full justify-center" do %>
+                  Review & Sign
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <%# Signed Change Orders %>
+      <% if @signed_change_orders.any? %>
+        <div class="<%= @pending_change_orders.any? ? 'pt-6 border-t border-stone-200' : '' %>">
+          <p class="text-sm font-medium text-emerald-600 uppercase tracking-wide mb-4 text-center">
+            ✓ Approved
+          </p>
+          
+          <div class="bg-white rounded-xl border border-stone-200 divide-y divide-stone-100 overflow-hidden">
+            <% @signed_change_orders.each do |co| %>
+              <div class="p-5">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-xs font-bold uppercase tracking-wide text-emerald-600">CO #<%= co.co_number %></span>
+                      <span class="text-xs text-stone-400">Signed <%= co.signed_at&.strftime("%b %d") %></span>
+                    </div>
+                    <p class="font-medium text-stone-900"><%= co.description %></p>
+                  </div>
+                  <p class="font-mono font-medium <%= co.amount.positive? ? 'text-emerald-600' : 'text-red-600' %> shrink-0">
+                    <%= co.formatted_amount %>
+                  </p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <%# Empty State %>
+      <div class="bg-white rounded-xl border border-stone-200 p-8 text-center">
+        <div class="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <p class="text-stone-600 font-medium mb-1">No change orders yet</p>
+        <p class="text-stone-500 text-sm">Any scope changes during the project will appear here for your review and approval.</p>
+      </div>
+    <% end %>
+  </section>
+
+  <%# Contracted Scope %>
+  <section class="max-w-2xl mx-auto">
+    <h2 class="text-2xl text-center mb-6">Contracted Scope</h2>
+    
+    <div class="bg-white rounded-xl border border-stone-200 divide-y divide-stone-100 overflow-hidden">
+      <% @job.quote.line_items.each do |item| %>
+        <div class="p-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="font-bold text-stone-900"><%= item.description %></p>
+              <p class="text-sm text-stone-500"><%= item.category.to_s.titleize %></p>
+            </div>
+            <p class="font-mono font-medium text-stone-700 shrink-0"><%= item.range_display %></p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <%# Project Details %>
+  <% if @job.project_full_address.present? %>
+    <section class="max-w-2xl mx-auto">
+      <div class="bg-white rounded-xl border border-stone-200 p-6">
+        <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-2">Project Location</p>
+        <p class="text-stone-900"><%= @job.project_full_address %></p>
+      </div>
+    </section>
+  <% end %>
+</div>

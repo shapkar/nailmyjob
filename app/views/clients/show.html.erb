@@ -1,0 +1,182 @@
+<% content_for :title, "#{@client.name} - NailMyJob" %>
+
+<div class="max-w-3xl mx-auto pb-20">
+  <%# Header %>
+  <div class="mb-8">
+    <%= link_to clients_path, class: "inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 mb-6 transition-colors font-medium text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      Back to clients
+    <% end %>
+    
+    <div class="flex items-start gap-4">
+      <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+        <span class="text-emerald-700 font-bold text-2xl">
+          <%= @client.name.first.upcase %>
+        </span>
+      </div>
+      <div class="min-w-0 flex-1">
+        <h1 class="text-3xl sm:text-4xl mb-1 truncate"><%= @client.name %></h1>
+        <p class="text-stone-500">Client since <%= @client.created_at.strftime("%B %Y") %></p>
+      </div>
+    </div>
+  </div>
+
+  <%# Quick Actions %>
+  <div class="flex flex-wrap gap-3 mb-8">
+    <%= link_to new_quote_path(client_id: @client.id), class: "btn-primary flex items-center gap-2" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+      New Quote
+    <% end %>
+    
+    <%= link_to edit_client_path(@client), class: "btn-secondary" do %>
+      Edit Client
+    <% end %>
+    
+    <% if @client.phone.present? %>
+      <%= link_to "tel:#{@client.phone}", class: "btn-secondary !px-4" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+      <% end %>
+    <% end %>
+    
+    <% if @client.email.present? %>
+      <%= link_to "mailto:#{@client.email}", class: "btn-secondary !px-4" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-8">
+      <%# Quotes Section %>
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl">Quotes</h2>
+          <%= link_to "+ Add new", new_quote_path(client_id: @client.id), class: "text-emerald-700 font-bold text-sm hover:underline" %>
+        </div>
+        
+        <% if @quotes.any? %>
+          <div class="card divide-y divide-stone-100 overflow-hidden">
+            <% @quotes.each do |quote| %>
+              <%= link_to quote_path(quote), class: "block p-5 hover:bg-stone-50 transition-colors group" do %>
+                <div class="flex items-start justify-between gap-4">
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                      <span class="font-bold text-stone-900 group-hover:text-emerald-800 transition-colors"><%= quote.quote_number %></span>
+                      <%= render "quotes/status_badge", quote: quote %>
+                    </div>
+                    <p class="text-stone-500"><%= quote.template_type.to_s.titleize %> Remodel</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <p class="text-lg font-bold text-stone-900"><%= quote.total_range %></p>
+                    <p class="text-xs text-stone-400"><%= quote.created_at.strftime("%b %d, %Y") %></p>
+                  </div>
+                </div>
+                <% if quote.job&.change_orders&.signed&.any? %>
+                  <div class="mt-3 pt-3 border-t border-stone-100">
+                    <p class="text-sm text-emerald-600 font-medium">
+                      +<%= number_to_currency(quote.job.change_orders_total, precision: 0) %> in change orders
+                    </p>
+                  </div>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="card p-10 text-center">
+            <div class="w-14 h-14 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-7 h-7 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <p class="text-stone-500 mb-4">No quotes for this client yet.</p>
+            <%= link_to new_quote_path(client_id: @client.id), class: "btn-primary" do %>
+              Create first quote
+            <% end %>
+          </div>
+        <% end %>
+      </section>
+
+      <%# Notes %>
+      <% if @client.notes.present? %>
+        <section class="card overflow-hidden">
+          <div class="px-6 py-4 border-b border-stone-100 bg-stone-50/50">
+            <h2 class="text-xl m-0">Notes</h2>
+          </div>
+          <div class="p-6">
+            <p class="text-stone-600 whitespace-pre-wrap leading-relaxed"><%= @client.notes %></p>
+          </div>
+        </section>
+      <% end %>
+    </div>
+
+    <%# Sidebar %>
+    <div class="space-y-6">
+      <%# Contact Info Card %>
+      <div class="card p-6 space-y-5">
+        <h3 class="text-xs font-bold uppercase tracking-wide text-stone-400">Contact Info</h3>
+        
+        <% if @client.email.present? %>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Email</p>
+            <a href="mailto:<%= @client.email %>" class="text-stone-900 hover:text-emerald-700 transition-colors font-medium break-all block">
+              <%= @client.email %>
+            </a>
+          </div>
+        <% end %>
+
+        <% if @client.phone.present? %>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Phone</p>
+            <a href="tel:<%= @client.phone %>" class="text-stone-900 hover:text-emerald-700 transition-colors font-medium">
+              <%= @client.formatted_phone || @client.phone %>
+            </a>
+          </div>
+        <% end %>
+
+        <% if @client.full_address.present? %>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Address</p>
+            <p class="text-stone-900 font-medium break-words"><%= @client.full_address %></p>
+          </div>
+        <% end %>
+        
+        <% if @client.email.blank? && @client.phone.blank? && @client.full_address.blank? %>
+          <p class="text-stone-400 text-sm">No contact info added yet.</p>
+          <%= link_to "Add details", edit_client_path(@client), class: "text-emerald-700 font-bold text-sm hover:underline" %>
+        <% end %>
+      </div>
+
+      <%# Stats Card %>
+      <div class="card p-6">
+        <h3 class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-4">Summary</h3>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-stone-500">Total quotes</span>
+            <span class="text-xl font-bold text-stone-900"><%= @quotes.count %></span>
+          </div>
+          <% accepted_count = @quotes.select { |q| q.signed? || q.accepted? }.count %>
+          <div class="flex justify-between items-center">
+            <span class="text-stone-500">Accepted</span>
+            <span class="text-xl font-bold text-emerald-600"><%= accepted_count %></span>
+          </div>
+          <% total_value = @quotes.select { |q| q.signed? || q.accepted? }.sum { |q| q.total_range_low || 0 } %>
+          <% if total_value > 0 %>
+            <div class="pt-4 border-t border-stone-100">
+              <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Total Value</p>
+              <p class="text-2xl font-bold text-stone-900"><%= number_to_currency(total_value, precision: 0) %>+</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Danger Zone %>
+      <div class="card p-6 border-l-4 border-red-300">
+        <h3 class="text-xs font-bold uppercase tracking-wide text-red-500 mb-3">Danger Zone</h3>
+        <%= button_to client_path(@client), 
+            method: :delete, 
+            data: { turbo_confirm: "Are you sure you want to delete this client? This will also remove them from all quotes." },
+            class: "text-red-600 hover:text-red-800 text-sm font-medium transition-colors" do %>
+          Delete this client
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

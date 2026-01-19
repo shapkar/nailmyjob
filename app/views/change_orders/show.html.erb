@@ -1,0 +1,231 @@
+<% content_for :title, "Change Order ##{@change_order.co_number} - NailMyJob" %>
+
+<div class="max-w-3xl mx-auto pb-20">
+  <%# Header %>
+  <div class="mb-8">
+    <%= link_to job_path(@job), class: "inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 mb-6 transition-colors font-medium text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      Back to job
+    <% end %>
+    
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+      <%= render "change_orders/status_badge", change_order: @change_order %>
+      <span class="font-bold text-stone-600 text-sm">#<%= @change_order.co_number %></span>
+    </div>
+    
+    <h1 class="text-3xl sm:text-4xl mb-2">Change Order</h1>
+    
+    <p class="text-stone-500">
+      For <strong class="text-stone-700"><%= @job.client&.name %></strong> · Job <%= @job.job_number %>
+    </p>
+  </div>
+
+  <%# Action Bar %>
+  <div class="bg-white p-4 rounded-2xl shadow-sm border border-black/5 flex flex-wrap items-center gap-3 mb-8 sticky top-4 z-20">
+    <% if @change_order.draft? %>
+      <%= link_to edit_job_change_order_path(@job, @change_order), class: "btn-secondary !py-2.5 !px-5" do %>
+        Edit
+      <% end %>
+      
+      <% if @job.client.present? %>
+        <%= button_to send_to_client_job_change_order_path(@job, @change_order), method: :post, class: "btn-primary !py-2.5 !px-5" do %>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          Send for Signature
+        <% end %>
+      <% end %>
+
+      <%= link_to signature_job_change_order_path(@job, @change_order), class: "btn-secondary !py-2.5 !px-5" do %>
+        Sign Now
+      <% end %>
+    <% end %>
+    
+    <% if @change_order.sent? || @change_order.viewed? %>
+      <%= link_to signature_job_change_order_path(@job, @change_order), class: "btn-primary !py-2.5 !px-5" do %>
+        Collect Signature
+      <% end %>
+    <% end %>
+    
+    <div class="ml-auto flex items-center gap-2">
+      <%= link_to preview_pdf_job_change_order_path(@job, @change_order), target: "_blank", class: "btn-secondary !py-2.5 !px-4 text-sm" do %>
+        Preview PDF
+      <% end %>
+      <%= link_to download_pdf_job_change_order_path(@job, @change_order), class: "btn-secondary !py-2.5 !px-4 text-sm" do %>
+        Download
+      <% end %>
+      
+      <%# More Actions Dropdown %>
+      <div class="relative" data-controller="dropdown">
+        <button type="button" 
+                class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-stone-100 transition-colors text-stone-500"
+                data-action="click->dropdown#toggle">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+        </button>
+        <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-black/5 py-2 z-50"
+             data-dropdown-target="menu">
+          <% unless @change_order.signed? %>
+            <%= link_to job_change_order_path(@job, @change_order), 
+                method: :delete, 
+                data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this change order? This cannot be undone." }, 
+                class: "block px-4 py-2 text-red-600 hover:bg-red-50" do %>
+              Delete Change Order
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-8">
+      <%# Description Card %>
+      <section class="card overflow-hidden">
+        <div class="px-6 py-4 border-b border-stone-100 bg-stone-50/50">
+          <h2 class="text-xl m-0">Description</h2>
+        </div>
+        <div class="p-6">
+          <p class="text-lg text-stone-900 leading-relaxed"><%= @change_order.description %></p>
+        </div>
+      </section>
+
+      <%# Details Card %>
+      <section class="card overflow-hidden">
+        <div class="px-6 py-4 border-b border-stone-100 bg-stone-50/50">
+          <h2 class="text-xl m-0">Details</h2>
+        </div>
+        <div class="p-6 space-y-6">
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Category</p>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl"><%= @change_order.category_icon %></span>
+                <span class="text-lg font-medium text-stone-900"><%= @change_order.category.to_s.titleize %></span>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Schedule Impact</p>
+              <p class="text-lg font-medium text-stone-900"><%= @change_order.schedule_impact_display %></p>
+            </div>
+          </div>
+
+          <% if @change_order.line_item.present? %>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Related Line Item</p>
+              <p class="text-lg font-medium text-stone-900"><%= @change_order.line_item.description %></p>
+            </div>
+          <% end %>
+
+          <% if @change_order.is_time_and_materials %>
+            <div class="p-4 bg-amber-50 rounded-xl">
+              <p class="text-xs font-bold uppercase tracking-wide text-amber-600 mb-1">Time & Materials</p>
+              <p class="text-lg font-medium text-amber-900">
+                <%= number_to_currency(@change_order.hourly_rate) %>/hr
+              </p>
+            </div>
+          <% end %>
+        </div>
+      </section>
+
+      <%# Legal Boilerplate %>
+      <% if @change_order.legal_boilerplate.present? %>
+        <section class="card overflow-hidden">
+          <div class="px-6 py-4 border-b border-stone-100 bg-stone-50/50">
+            <h2 class="text-xl m-0">Terms & Conditions</h2>
+          </div>
+          <div class="p-6">
+            <p class="text-sm text-stone-600 whitespace-pre-wrap leading-relaxed"><%= @change_order.legal_boilerplate %></p>
+          </div>
+        </section>
+      <% end %>
+    </div>
+
+    <%# Sidebar %>
+    <div class="space-y-6">
+      <%# Amount Card %>
+      <div class="card p-6 border-2 border-stone-200">
+        <p class="text-stone-500 text-xs font-bold uppercase tracking-wide mb-3">Change Order Amount</p>
+        <p class="text-4xl font-bold tracking-tight <%= @change_order.amount.positive? ? 'text-emerald-600' : 'text-red-600' %>">
+          <%= @change_order.formatted_amount %>
+        </p>
+      </div>
+
+      <%# Impact on Job %>
+      <div class="card p-6 space-y-4">
+        <p class="text-stone-500 text-xs font-bold uppercase tracking-wide">Impact on Job Total</p>
+        
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-stone-500">Current total</span>
+            <span class="font-mono text-stone-700"><%= @job.current_total_range %></span>
+          </div>
+          <div class="flex justify-between items-center <%= @change_order.amount.positive? ? 'text-emerald-600' : 'text-red-600' %>">
+            <span>This change</span>
+            <span class="font-mono font-medium"><%= @change_order.formatted_amount %></span>
+          </div>
+          <% unless @change_order.signed? %>
+            <div class="pt-3 border-t border-dashed border-stone-200">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-stone-900">New total</span>
+                <span class="font-bold text-stone-900">
+                  $<%= number_with_delimiter(@change_order.new_total_low.to_i) %> – $<%= number_with_delimiter(@change_order.new_total_high.to_i) %>
+                </span>
+              </div>
+              <p class="text-xs text-stone-400 mt-1">If signed</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Client Portal Link (if not signed) %>
+      <% unless @change_order.signed? %>
+        <div class="card p-5 border-l-4 border-amber-400">
+          <p class="font-bold text-stone-900 mb-2">Client Signature Link</p>
+          <p class="text-sm text-stone-500 mb-4 leading-relaxed">Share this link with your client to let them review and sign the change order.</p>
+          
+          <div class="flex gap-2">
+            <input type="text" readonly value="<%= portal_change_order_signature_url(@change_order.client_view_token) %>" class="!text-sm !py-2 !bg-stone-50 text-stone-500">
+            <button type="button" 
+                    class="btn-secondary !px-3 !py-2 whitespace-nowrap"
+                    data-controller="clipboard"
+                    data-clipboard-text="<%= portal_change_order_signature_url(@change_order.client_view_token) %>"
+                    data-action="click->clipboard#copy">
+              Copy
+            </button>
+          </div>
+        </div>
+      <% end %>
+
+      <%# Signature Section (if signed) %>
+      <% if @change_order.signed? %>
+        <div class="card p-6 border-l-4 border-emerald-500 bg-emerald-50/50">
+          <div class="flex items-center gap-2 text-emerald-700 font-bold mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Signed
+          </div>
+          
+          <div class="space-y-3 text-sm">
+            <div>
+              <p class="text-emerald-600 text-xs font-bold uppercase tracking-wide">Signed by</p>
+              <p class="font-medium text-stone-900"><%= @change_order.signer_name %></p>
+            </div>
+            <div>
+              <p class="text-emerald-600 text-xs font-bold uppercase tracking-wide">Date</p>
+              <p class="font-medium text-stone-900"><%= @change_order.signed_at&.strftime("%B %d, %Y at %I:%M %p") %></p>
+            </div>
+            <% if @change_order.signer_email.present? %>
+              <div>
+                <p class="text-emerald-600 text-xs font-bold uppercase tracking-wide">Email</p>
+                <p class="font-medium text-stone-900"><%= @change_order.signer_email %></p>
+              </div>
+            <% end %>
+            <div>
+              <p class="text-emerald-600 text-xs font-bold uppercase tracking-wide">IP Address</p>
+              <p class="font-mono text-xs text-stone-500"><%= @change_order.signer_ip_address %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

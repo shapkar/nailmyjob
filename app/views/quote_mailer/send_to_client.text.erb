@@ -1,0 +1,39 @@
+<%= @company.name %>
+Project Quote
+================================================================================
+
+Hi <%= @client.name %>,
+
+Thank you for considering <%= @company.name %> for your <%= @quote.template_type.to_s.titleize.downcase %> project! We've prepared a detailed quote for you to review.
+
+QUOTE SUMMARY
+-------------
+Quote Number: <%= @quote.quote_number %>
+Project Type: <%= @quote.template_type.to_s.titleize %> Remodel
+<% if @quote.project_full_address.present? %>Location: <%= @quote.project_full_address %>
+<% end %><% if @quote.timeline_estimate.present? %>Estimated Timeline: <%= @quote.timeline_estimate %>
+<% end %><% if @quote.valid_days.present? %>Valid For: <%= @quote.valid_days %> days
+<% end %>
+
+ESTIMATED TOTAL: <%= @quote.total_range %>
+
+View your full quote and sign online:
+<%= @portal_url %>
+
+NOTE: This quote includes estimated ranges. Final costs will depend on your material selections.
+
+--------------------------------------------------------------------------------
+
+If you have any questions, feel free to reach out:
+<% if @company.phone.present? %>Phone: <%= @company.phone %>
+<% end %><% if @company.email.present? %>Email: <%= @company.email %>
+<% end %>
+
+We look forward to working with you!
+
+Best regards,
+<%= @company.name %>
+
+--------------------------------------------------------------------------------
+This quote was sent via NailMyJob (https://nailmyjob.com)
+© <%= Date.current.year %> <%= @company.name %>. All rights reserved.

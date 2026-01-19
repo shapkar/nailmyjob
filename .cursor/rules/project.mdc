@@ -1,0 +1,21 @@
+---
+description: Rails & Turbo coding practices
+globs: **/*
+alwaysApply: true
+---
+
+## Tech Stack
+
+- Ruby on Rails monolith
+- Hotwire (Turbo + Stimulus) for interactivity
+- TailwindCSS for styling
+- PostgreSQL
+- Sidekiq for background jobs
+- RSpec for testing
+
+## Conventions
+
+- Use service objects for complex business logic
+- Keep controllers skinny, use form objects when needed
+- Use `render turbo_stream:` instead of full reloads
+- Prefer keyword arguments and modern Ruby syntax

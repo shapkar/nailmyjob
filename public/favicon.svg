@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Favicon (simplified for small size) -->
+  <rect x="0" y="0" width="32" height="32" rx="6" ry="6" fill="#2d8a6e"/>
+  
+  <!-- Simplified checkmark-nail -->
+  <polyline 
+    points="6,17 12,23 22,9"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  
+  <!-- Nail head (simplified) -->
+  <ellipse 
+    cx="25" 
+    cy="6" 
+    rx="3.5" 
+    ry="2" 
+    fill="none" 
+    stroke="#ffffff" 
+    stroke-width="1.5"
+    transform="rotate(45, 25, 6)"
+  />
+</svg>

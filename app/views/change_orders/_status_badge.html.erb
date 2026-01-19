@@ -1,0 +1,15 @@
+<%# local_assigns: change_order %>
+<%
+  colors = {
+    "draft" => "bg-stone-100 text-stone-600",
+    "sent" => "bg-amber-100 text-amber-800",
+    "viewed" => "bg-blue-100 text-blue-800",
+    "signed" => "bg-emerald-100 text-emerald-800",
+    "rejected" => "bg-red-100 text-red-700"
+  }
+  color_class = colors[change_order.status.to_s] || colors["draft"]
+%>
+
+<span class="inline-flex items-center px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-full <%= color_class %>">
+  <%= change_order.status.to_s.titleize %>
+</span>

@@ -1,0 +1,15 @@
+<% content_for :title, "Edit Change Order ##{@change_order.co_number} - NailMyJob" %>
+
+<div class="max-w-2xl mx-auto pb-20">
+  <header class="mb-8">
+    <%= link_to job_change_order_path(@job, @change_order), class: "inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 mb-6 transition-colors font-medium text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      Back to change order
+    <% end %>
+    
+    <h1 class="text-3xl sm:text-4xl mb-2">Edit Change Order #<%= @change_order.co_number %></h1>
+    <p class="text-stone-500">For <%= @job.job_number %> · <%= @job.client&.name %></p>
+  </header>
+
+  <%= render "form", change_order: @change_order, job: @job %>
+</div>

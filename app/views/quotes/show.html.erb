@@ -1,0 +1,247 @@
+<% content_for :title, "#{@quote.client&.name || 'Quote'} - NailMyJob" %>
+
+<div class="max-w-4xl mx-auto pb-20">
+  <%# Header %>
+  <div class="mb-8">
+    <%= link_to quotes_path, class: "inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 mb-6 transition-colors font-medium text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      Back to quotes
+    <% end %>
+    
+    <div>
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <% if @quote.draft? %>
+          <span class="bg-stone-100 text-stone-600 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wide">Draft</span>
+        <% elsif @quote.sent? %>
+          <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wide">Sent</span>
+        <% elsif @quote.viewed? %>
+          <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wide">Viewed</span>
+        <% elsif @quote.accepted? || @quote.signed? %>
+          <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wide flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            Accepted
+          </span>
+        <% end %>
+        <span class="font-bold text-stone-600 text-sm">#<%= @quote.quote_number %></span>
+      </div>
+      
+      <h1 class="text-3xl sm:text-4xl mb-2">
+        <%= @quote.client&.name || "No client" %>
+      </h1>
+      
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-stone-500 text-sm sm:text-base">
+        <span><%= @quote.template_type.to_s.titleize %> Remodel</span>
+        <% if @quote.sent_at.present? %>
+          <span class="hidden sm:inline">·</span>
+          <span class="text-emerald-700 font-medium">Sent <%= time_ago_in_words(@quote.sent_at) %> ago</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Job Banner - shown when quote has been converted to a job %>
+  <% if @quote.has_job? %>
+    <div class="card p-5 mb-8 border-l-4 border-emerald-500 bg-emerald-50/50">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <p class="font-bold text-emerald-800 mb-1">This quote has been converted to a job</p>
+          <p class="text-sm text-emerald-700">Change orders are now managed in the job.</p>
+        </div>
+        <%= link_to job_path(@quote.job), class: "btn-primary !py-2.5 !px-5 w-full sm:w-auto text-center justify-center" do %>
+          View Job
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Action Bar %>
+  <div class="bg-white p-4 rounded-2xl shadow-sm border border-black/5 flex flex-wrap items-center gap-3 mb-8 sticky top-4 z-20 overflow-x-auto">
+    <% if !@quote.signed? && @quote.client.present? && @quote.client.email.present? %>
+      <%= button_to send_to_client_quote_path(@quote), method: :post, class: "btn-primary !py-2.5 !px-5 whitespace-nowrap" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <%= @quote.sent? || @quote.viewed? ? "Send Again" : "Send to Client" %>
+      <% end %>
+    <% end %>
+    
+    <% unless @quote.has_job? %>
+      <%= link_to edit_quote_path(@quote), class: "btn-secondary !py-2.5 !px-5 whitespace-nowrap" do %>
+        Edit Quote
+      <% end %>
+    <% end %>
+    
+    <%= link_to preview_pdf_quote_path(@quote), target: "_blank", class: "btn-secondary !py-2.5 !px-5 whitespace-nowrap" do %>
+      Preview PDF
+    <% end %>
+
+    <%= link_to download_pdf_quote_path(@quote), class: "btn-secondary !py-2.5 !px-5 whitespace-nowrap" do %>
+      Download PDF
+    <% end %>
+
+    <%= link_to duplicate_quote_path(@quote), data: { turbo_method: :post }, class: "btn-secondary !py-2.5 !px-5 whitespace-nowrap" do %>
+      Duplicate
+    <% end %>
+
+    <% unless @quote.has_job? %>
+      <%= link_to @quote, data: { turbo_method: :delete, turbo_confirm: "Delete this quote?" }, class: "btn-secondary !py-2.5 !px-5 !text-red-600 hover:!bg-red-50 hover:!border-red-200 whitespace-nowrap" do %>
+        Delete
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-8">
+      <%# Line Items %>
+      <section class="card overflow-hidden">
+        <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between bg-stone-50/50">
+          <h2 class="text-xl m-0">Line Items</h2>
+          <span class="text-stone-500 font-medium text-sm"><%= @line_items.size %> items</span>
+        </div>
+        
+        <% if @line_items.any? %>
+          <div class="divide-y divide-stone-100">
+            <% @line_items.each do |item| %>
+              <div class="p-6 hover:bg-stone-50 transition-colors">
+                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div>
+                    <h3 class="text-lg font-bold text-stone-900 mb-1"><%= item.description %></h3>
+                    <div class="flex items-center gap-3">
+                      <span class="text-xs font-bold uppercase tracking-wide text-stone-400"><%= item.category.to_s.titleize %></span>
+                      <% if item.is_allowance %>
+                        <span class="text-xs font-bold uppercase tracking-wide text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Allowance</span>
+                      <% end %>
+                      <% if item.is_range? %>
+                        <span class="text-xs font-bold uppercase tracking-wide text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Range</span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <p class="text-lg font-mono font-medium text-stone-900 shrink-0"><%= item.range_display %></p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="p-12 text-center">
+            <p class="text-stone-500 mb-4">No line items yet.</p>
+            <%= link_to "Add items", edit_quote_path(@quote), class: "btn-secondary" %>
+          </div>
+        <% end %>
+      </section>
+
+      <%# Change Orders (only shown if quote has a job) %>
+      <% if @quote.has_job? %>
+        <section>
+          <div class="flex items-center justify-between mb-4 px-2">
+            <h2 class="text-2xl m-0">Change Orders</h2>
+            <%# Removed + Add New link as requested, users should go to Job %>
+          </div>
+          
+          <% change_orders = @quote.job.change_orders %>
+          <% if change_orders.any? %>
+            <div class="space-y-4">
+              <% change_orders.each do |co| %>
+                <%= link_to job_change_order_path(@quote.job, co), class: "card block p-6 hover:shadow-md transition-all group" do %>
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <div class="flex items-center gap-3 mb-2">
+                        <span class="text-stone-400 font-mono text-sm">#<%= co.co_number %></span>
+                        <% if co.signed? %>
+                          <span class="text-xs font-bold uppercase tracking-wide text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Signed</span>
+                        <% elsif co.sent? || co.viewed? %>
+                          <span class="text-xs font-bold uppercase tracking-wide text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Pending</span>
+                        <% else %>
+                          <span class="text-xs font-bold uppercase tracking-wide text-stone-500 bg-stone-100 px-2 py-0.5 rounded">Draft</span>
+                        <% end %>
+                      </div>
+                      <p class="text-lg font-medium text-stone-900 group-hover:text-emerald-800 transition-colors"><%= truncate(co.description, length: 80) %></p>
+                    </div>
+                    <p class="text-lg font-mono font-medium text-stone-900 shrink-0">
+                      <%= co.formatted_amount %>
+                    </p>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="card p-8 text-center bg-stone-50 border-dashed border-stone-200">
+              <p class="text-stone-500 text-sm">No change orders yet.</p>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+    </div>
+
+    <%# Sidebar %>
+    <div class="space-y-6">
+      <%# Project Total Card %>
+      <div class="card p-6 border-2 border-stone-200">
+        <p class="text-stone-500 text-xs font-bold uppercase tracking-wide mb-3">
+          <%= @quote.has_job? ? "Current Project Total" : "Estimated Project Total" %>
+        </p>
+        <p class="text-3xl font-bold text-stone-900 tracking-tight">
+          <%= @quote.current_total_range %>
+        </p>
+        
+        <% if @quote.has_job? && @quote.job.change_orders_total.to_i > 0 %>
+          <div class="mt-5 pt-5 border-t border-stone-100 space-y-3">
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-stone-400">Original quote</span>
+              <span class="text-stone-500 font-mono"><%= @quote.total_range %></span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-emerald-600 font-medium">Change orders</span>
+              <span class="text-emerald-600 font-mono font-medium">+<%= number_to_currency(@quote.job.change_orders_total, precision: 0) %></span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Client Portal Link %>
+      <% if @quote.client.present? %>
+        <div class="card p-5 border-l-4 border-emerald-500">
+          <p class="font-bold text-stone-900 mb-2">Client Portal Link</p>
+          <p class="text-sm text-stone-500 mb-4 leading-relaxed">
+            <% if @quote.has_job? %>
+              Share this link with your client to view the job and sign change orders.
+            <% else %>
+              Share this link with your client to view and sign the quote.
+            <% end %>
+          </p>
+          
+          <div class="flex gap-2">
+            <% portal_link = @quote.has_job? ? portal_job_url(@quote.job.client_view_token) : portal_quote_url(@quote.client_view_token) %>
+            <input type="text" readonly value="<%= portal_link %>" class="!text-sm !py-2 !bg-stone-50 text-stone-500">
+            <button type="button" 
+                    class="btn-secondary !px-3 !py-2 whitespace-nowrap"
+                    data-controller="clipboard"
+                    data-clipboard-text="<%= portal_link %>"
+                    data-action="click->clipboard#copy">
+              Copy
+            </button>
+          </div>
+        </div>
+      <% end %>
+
+      <%# Details %>
+      <div class="card p-6 space-y-6">
+        <% if @quote.project_full_address.present? %>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Project Address</p>
+            <p class="font-medium text-stone-900"><%= @quote.project_full_address %></p>
+          </div>
+        <% end %>
+        <% if @quote.timeline_estimate.present? %>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Timeline</p>
+            <p class="font-medium text-stone-900"><%= @quote.timeline_estimate %></p>
+          </div>
+        <% end %>
+        <% if @quote.notes.present? %>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wide text-stone-400 mb-1">Internal Notes</p>
+            <p class="text-sm text-stone-600 whitespace-pre-wrap"><%= @quote.notes %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

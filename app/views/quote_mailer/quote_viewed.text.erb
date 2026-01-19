@@ -1,0 +1,19 @@
+Quote Viewed! 👀
+================================================================================
+
+Good news! <%= @quote.client.name %> just viewed your quote.
+
+QUOTE DETAILS
+-------------
+Quote Number: <%= @quote.quote_number %>
+Project Type: <%= @quote.template_type.to_s.titleize %> Remodel
+Viewed At: <%= @quote.viewed_at&.strftime("%B %d, %Y at %I:%M %p") %>
+Quote Total: <%= @quote.total_range %>
+
+TIP: This is a great time to follow up with your client if you haven't heard back in a day or two.
+
+Best regards,
+NailMyJob
+
+--------------------------------------------------------------------------------
+This notification was sent via NailMyJob (https://nailmyjob.com)

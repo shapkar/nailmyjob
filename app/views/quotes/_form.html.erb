@@ -1,0 +1,172 @@
+<%# local_assigns: quote, line_items, clients %>
+<%= form_with model: quote, class: "space-y-8", data: { controller: "quote-form", action: "input->quote-form#updateTotal change->quote-form#updateTotal", turbo: false } do |f| %>
+  <% if quote.errors.any? %>
+    <div class="rounded-lg p-4 bg-red-50 border border-red-200 text-red-800 text-sm">
+      <strong>Please fix:</strong> <%= quote.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <%# Two Column Layout for Desktop %>
+  <div class="grid lg:grid-cols-3 gap-8">
+    
+    <%# Left Column - Main Content %>
+    <div class="lg:col-span-2 space-y-6">
+      
+      <%# Budget Items %>
+      <section>
+        <div class="flex items-center justify-between mb-4 px-1">
+          <h2 class="text-xl font-bold text-stone-900">Budget Items</h2>
+          <button type="button" 
+                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700 hover:text-emerald-800 transition-colors bg-white border border-stone-200 shadow-sm rounded-lg px-3 py-1.5 hover:border-emerald-500"
+                  data-action="click->quote-form#addLineItem">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Add Item
+          </button>
+        </div>
+        
+        <div data-quote-form-target="lineItems" class="space-y-4">
+          <%= f.fields_for :line_items do |lf| %>
+            <%= render "quotes/line_item_fields", f: lf %>
+          <% end %>
+        </div>
+        
+        <template data-quote-form-target="lineItemTemplate">
+          <%= f.fields_for :line_items, quote.line_items.build, child_index: "NEW_RECORD" do |lf| %>
+            <%= render "quotes/line_item_fields", f: lf %>
+          <% end %>
+        </template>
+        
+        <% if quote.line_items.empty? %>
+          <div class="p-10 text-center border-2 border-dashed border-stone-200 rounded-xl bg-stone-50/50">
+            <p class="text-stone-400 mb-2">No items yet</p>
+            <button type="button" 
+                    class="text-emerald-600 hover:text-emerald-700 font-medium text-sm"
+                    data-action="click->quote-form#addLineItem">
+              + Add your first item
+            </button>
+          </div>
+        <% end %>
+      </section>
+
+      <%# Notes (Collapsible feel - just smaller) %>
+      <details class="card overflow-hidden group" open>
+        <summary class="px-5 py-3 bg-stone-50 border-b border-stone-100 cursor-pointer flex items-center justify-between hover:bg-stone-100 transition-colors">
+          <h2 class="font-bold text-stone-900">Notes & Terms</h2>
+          <svg class="w-5 h-5 text-stone-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </summary>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="text-xs font-bold uppercase tracking-wide text-stone-500 mb-1 block">Internal Notes</label>
+            <%= f.text_area :notes, rows: 2, placeholder: "Notes for your reference only...", class: "!text-sm !p-3" %>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-bold uppercase tracking-wide text-stone-500 mb-1 block">Payment Terms</label>
+              <%= f.text_area :payment_terms, rows: 2, placeholder: "50% deposit...", class: "!text-sm !p-3" %>
+            </div>
+            <div>
+              <label class="text-xs font-bold uppercase tracking-wide text-stone-500 mb-1 block">Terms & Conditions</label>
+              <%= f.text_area :terms, rows: 2, class: "!text-sm !p-3" %>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <%# Right Sidebar %>
+    <div class="space-y-6">
+      
+      <%# Total %>
+      <div class="card p-6 border-2 border-stone-200">
+        <p class="text-stone-500 text-sm font-medium mb-1">Estimated Total</p>
+        <p class="text-3xl font-bold text-stone-900 tracking-tight" data-quote-form-target="totalRange">
+          <%= quote.total_range %>
+        </p>
+        <p class="text-stone-400 text-xs mt-1">Calculated from line items</p>
+        
+        <div class="mt-5 pt-4 border-t border-stone-100 space-y-3">
+          <%= f.submit quote.persisted? ? "Save Changes" : "Create Quote", 
+              class: "btn-primary w-full cursor-pointer" %>
+          <%= link_to "Cancel", quote.persisted? ? quote_path(quote) : quotes_path, 
+              class: "block text-center text-stone-500 hover:text-stone-700 text-sm font-medium transition-colors" %>
+        </div>
+      </div>
+
+      <%# Client Info %>
+      <div class="card p-5">
+        <h3 class="font-bold text-stone-900 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          Client
+        </h3>
+        <% if quote.client.present? %>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-medium text-stone-900"><%= quote.client.name %></p>
+              <p class="text-sm text-stone-500"><%= quote.client.email || quote.client.phone %></p>
+            </div>
+            <%= f.hidden_field :client_id %>
+          </div>
+        <% else %>
+          <div class="space-y-3" data-quote-form-target="clientFields">
+            <%= f.select :client_id, 
+                         clients.map { |c| [c.name, c.id] }, 
+                         { include_blank: "Select client..." },
+                         class: "!text-sm !py-2" %>
+            <p class="text-xs text-stone-400 text-center">— or —</p>
+            <%= f.fields_for :client_attributes, (quote.client || quote.build_client) do |cf| %>
+              <%= cf.text_field :name, placeholder: "New client name", class: "!text-sm !py-2" %>
+              <%= cf.email_field :email, placeholder: "Email", class: "!text-sm !py-2 mt-2" %>
+              <%= cf.telephone_field :phone, placeholder: "Phone", class: "!text-sm !py-2 mt-2" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Project Details %>
+      <div class="card p-5">
+        <h3 class="font-bold text-stone-900 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          Project
+        </h3>
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <%= f.select :template_type, 
+                         Quote.template_types.keys.map { |t| [t.titleize, t] },
+                         {},
+                         class: "!text-sm !py-2" %>
+            <%= f.select :project_size, 
+                         Quote.project_sizes.keys.map { |s| [s.titleize, s] },
+                         {},
+                         class: "!text-sm !py-2" %>
+          </div>
+          <%= f.text_field :project_address, placeholder: "Address", class: "!text-sm !py-2" %>
+          <div class="grid grid-cols-3 gap-2">
+            <%= f.text_field :project_city, placeholder: "City", class: "!text-sm !py-2" %>
+            <%= f.text_field :project_state, placeholder: "ST", maxlength: 2, class: "!text-sm !py-2 uppercase text-center" %>
+            <%= f.text_field :project_zip_code, placeholder: "ZIP", class: "!text-sm !py-2" %>
+          </div>
+          <%= f.text_field :timeline_estimate, placeholder: "Timeline (e.g. 4-6 weeks)", class: "!text-sm !py-2" %>
+          
+          <div class="pt-2 border-t border-stone-100">
+            <label class="text-xs text-stone-500">Valid for</label>
+            <div class="flex items-center gap-2">
+              <%= f.number_field :valid_days, min: 1, max: 365, class: "!text-sm !py-2 !w-20" %>
+              <span class="text-sm text-stone-500">days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Mobile Save Button %>
+  <div class="lg:hidden sticky bottom-20 bg-[#f9f8f4] py-4 -mx-4 px-4 border-t border-stone-200">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <p class="text-xs text-stone-500">Total</p>
+        <p class="font-bold text-lg" data-quote-form-target="totalRange"><%= quote.total_range %></p>
+      </div>
+      <%= f.submit quote.persisted? ? "Save" : "Create", class: "btn-primary cursor-pointer" %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,25 @@
+<%# local_assigns: item %>
+<div class="px-4 py-3 flex items-center justify-between">
+  <div class="flex items-center gap-3 min-w-0 flex-1">
+    <span class="text-lg shrink-0"><%= item.icon %></span>
+    <div class="min-w-0">
+      <p class="font-medium text-slate-900 truncate">
+        <%= item.description %>
+        <% if item.is_allowance %>
+          <span class="text-slate-400">*</span>
+        <% end %>
+      </p>
+      <% if item.quality_tier.present? %>
+        <p class="text-xs text-slate-500"><%= item.quality_tier.to_s.titleize %> tier</p>
+      <% end %>
+    </div>
+  </div>
+  <div class="text-right ml-4 shrink-0">
+    <p class="font-semibold text-slate-900"><%= item.range_display %></p>
+    <% if item.final_price.present? && item.is_allowance %>
+      <p class="text-xs <%= item.overbudget? ? 'text-red-600' : 'text-emerald-600' %>">
+        Final: <%= number_to_currency(item.final_price, precision: 0) %>
+      </p>
+    <% end %>
+  </div>
+</div>

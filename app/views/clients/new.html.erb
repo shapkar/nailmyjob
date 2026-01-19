@@ -1,0 +1,15 @@
+<% content_for :title, "New Client - NailMyJob" %>
+
+<div class="space-y-6">
+  <%# Header %>
+  <div class="flex items-center gap-4">
+    <%= link_to clients_path, class: "p-2 -ml-2 text-slate-400 hover:text-slate-600 transition-colors" do %>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    <% end %>
+    <h1 class="text-xl font-bold text-slate-900">New Client</h1>
+  </div>
+
+  <%= render "form", client: @client %>
+</div>

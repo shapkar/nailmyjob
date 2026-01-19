@@ -1,0 +1,81 @@
+<% content_for :title, "Clients - NailMyJob" %>
+
+<div class="max-w-3xl mx-auto">
+  <header class="flex items-end justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl sm:text-4xl mb-1">Clients</h1>
+      <p class="text-stone-500">
+        <%= @clients.respond_to?(:total_count) ? @clients.total_count : @clients.size %> total
+      </p>
+    </div>
+    <%= link_to new_client_path, class: "btn-primary" do %>
+      + Add Client
+    <% end %>
+  </header>
+
+  <% if @clients.any? %>
+    <div class="bg-white rounded-xl border border-stone-200 divide-y divide-stone-100 overflow-hidden">
+      <% @clients.each do |client| %>
+        <%= link_to client, class: "block p-5 hover:bg-stone-50 transition-colors group" do %>
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0 flex-1">
+              <h3 class="text-lg font-bold text-stone-900 group-hover:text-emerald-800 transition-colors truncate">
+                <%= client.name %>
+              </h3>
+              <p class="text-sm text-stone-500">
+                <% if client.email.present? %>
+                  <%= client.email %>
+                <% elsif client.phone.present? %>
+                  <%= client.formatted_phone %>
+                <% else %>
+                  No contact info
+                <% end %>
+              </p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-stone-900">
+                <%= client.quotes.count %> <%= "quote".pluralize(client.quotes.count) %>
+              </p>
+              <% if client.quotes.accepted.any? %>
+                <p class="text-sm text-emerald-600 font-medium">
+                  <%= client.quotes.accepted.count %> accepted
+                </p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if defined?(@pagy) && @pagy.pages > 1 %>
+      <div class="flex items-center justify-center gap-4 pt-6">
+        <% if @pagy.prev %>
+          <%= link_to clients_path(page: @pagy.prev), class: "text-sm font-bold text-stone-500 hover:text-stone-900" do %>
+            ← Previous
+          <% end %>
+        <% end %>
+        <span class="text-sm text-stone-400">
+          Page <%= @pagy.page %> of <%= @pagy.pages %>
+        </span>
+        <% if @pagy.next %>
+          <%= link_to clients_path(page: @pagy.next), class: "text-sm font-bold text-stone-500 hover:text-stone-900" do %>
+            Next →
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="bg-white rounded-xl border border-stone-200 p-10 text-center">
+      <div class="w-14 h-14 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+      </div>
+      <h3 class="text-xl font-bold text-stone-900 mb-2">No clients yet</h3>
+      <p class="text-stone-500 mb-6">
+        Add your first client to start creating quotes.
+      </p>
+      <%= link_to new_client_path, class: "btn-primary" do %>
+        Add your first client
+      <% end %>
+    </div>
+  <% end %>
+</div>

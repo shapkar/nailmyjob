@@ -1,0 +1,162 @@
+<% content_for :title, "Settings - NailMyJob" %>
+
+<div class="max-w-2xl mx-auto pb-20">
+  <header class="mb-8">
+    <h1 class="text-3xl sm:text-4xl mb-2">Settings</h1>
+    <p class="text-stone-500">Manage your company and preferences.</p>
+  </header>
+
+  <%= form_with model: @company, url: company_path, method: :patch do |f| %>
+    <% if @company.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+        <p class="font-bold text-red-800 mb-2">Please fix these errors:</p>
+        <ul class="list-disc list-inside text-red-700 text-sm">
+          <% @company.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="bg-white rounded-xl border border-stone-200 mb-6">
+      <div class="px-5 py-4 border-b border-stone-100">
+        <h2 class="font-bold text-stone-900">Company Information</h2>
+      </div>
+      <div class="p-5">
+        <div class="flex items-start gap-4 mb-5">
+          <% if @company.logo.attached? %>
+            <div class="w-16 h-16 rounded-lg overflow-hidden border border-stone-200 shrink-0">
+              <%= image_tag @company.logo, class: "w-full h-full object-cover" %>
+            </div>
+          <% else %>
+            <div class="w-16 h-16 rounded-lg flex items-center justify-center shrink-0 bg-stone-100 border border-dashed border-stone-300">
+              <svg class="w-6 h-6 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+          <% end %>
+          <div class="flex-1 min-w-0">
+            <label class="block text-sm font-bold text-stone-700 mb-1">Logo</label>
+            <%= f.file_field :logo, accept: "image/*", class: "block w-full text-sm text-stone-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-stone-100 file:text-stone-700 file:cursor-pointer hover:file:bg-stone-200" %>
+            <p class="text-xs text-stone-400 mt-1">PNG, JPG, or WebP up to 2MB</p>
+            <% if @company.logo.attached? %>
+              <%= button_to "Remove logo", remove_logo_company_path, method: :delete, data: { turbo_confirm: "Remove logo?" }, class: "text-xs font-medium text-red-600 hover:text-red-700 mt-1" %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="block text-sm font-bold text-stone-700 mb-1">Company name</label>
+          <%= f.text_field :name, required: true, placeholder: "Your Company Name" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-5">
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-1">Email</label>
+            <%= f.email_field :email, placeholder: "hello@company.com" %>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-1">Phone</label>
+            <%= f.telephone_field :phone, placeholder: "(555) 123-4567" %>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">License number</label>
+          <%= f.text_field :license_number, placeholder: "CSLB #123456" %>
+          <p class="text-xs text-stone-400 mt-1">Shown on your quotes for credibility</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-stone-200 mb-6">
+      <div class="px-5 py-4 border-b border-stone-100">
+        <h2 class="font-bold text-stone-900">Address</h2>
+      </div>
+      <div class="p-5">
+        <div class="mb-4">
+          <label class="block text-sm font-bold text-stone-700 mb-1">Street address</label>
+          <%= f.text_field :address, placeholder: "123 Main St" %>
+        </div>
+        <div class="grid grid-cols-6 gap-3">
+          <div class="col-span-3">
+            <label class="block text-sm font-bold text-stone-700 mb-1">City</label>
+            <%= f.text_field :city, placeholder: "Los Angeles" %>
+          </div>
+          <div class="col-span-1">
+            <label class="block text-sm font-bold text-stone-700 mb-1">State</label>
+            <%= f.text_field :state, maxlength: 2, class: "uppercase", placeholder: "CA" %>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-sm font-bold text-stone-700 mb-1">ZIP</label>
+            <%= f.text_field :zip_code, placeholder: "90210" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-stone-200 mb-6">
+      <div class="px-5 py-4 border-b border-stone-100">
+        <h2 class="font-bold text-stone-900">Quote Defaults</h2>
+        <p class="text-sm text-stone-500">Pre-filled when you create new quotes</p>
+      </div>
+      <div class="p-5">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-1">Labor markup</label>
+            <div class="relative">
+              <%= f.number_field :default_labor_markup, min: 0, max: 100, step: 0.1, class: "!pr-10", placeholder: "25" %>
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 font-medium">%</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-1">Material markup</label>
+            <div class="relative">
+              <%= f.number_field :default_material_markup, min: 0, max: 100, step: 0.1, class: "!pr-10", placeholder: "15" %>
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 font-medium">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-bold text-stone-700 mb-1">Payment terms</label>
+          <%= f.text_area :default_payment_terms, rows: 2, placeholder: "50% deposit required. Balance due upon completion." %>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-bold text-stone-700 mb-1">Terms & conditions</label>
+          <%= f.text_area :default_terms, rows: 3, placeholder: "All work guaranteed for one year..." %>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Change order terms</label>
+          <%= f.text_area :legal_boilerplate, rows: 2, placeholder: "This change order amends the original agreement..." %>
+          <p class="text-xs text-stone-400 mt-1">Added to every change order for legal protection</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mb-8">
+      <%= link_to "Cancel", dashboard_path, class: "btn-secondary" %>
+      <%= f.submit "Save changes", class: "btn-primary cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <div class="bg-white rounded-xl border border-stone-200">
+    <div class="px-5 py-4 border-b border-stone-100">
+      <h2 class="font-bold text-stone-900">Your Account</h2>
+    </div>
+    <div class="p-5">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="font-bold text-stone-900"><%= current_user.full_name %></p>
+          <p class="text-sm text-stone-500"><%= current_user.email %></p>
+        </div>
+        <%= link_to "Edit profile", edit_user_registration_path, class: "text-emerald-700 font-bold text-sm hover:underline" %>
+      </div>
+      <div class="mt-4 pt-4 border-t border-stone-100">
+        <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "text-red-600 hover:text-red-700 text-sm font-medium", data: { turbo: false } %>
+      </div>
+    </div>
+  </div>
+</div>

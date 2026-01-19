@@ -1,0 +1,529 @@
+<% content_for :title, "NailMyJob - Voice-Powered Quotes & Change Orders for Contractors" %>
+
+<!-- Navigation -->
+<nav style="position: sticky; top: 0; background: rgba(255, 254, 249, 0.95); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05);">
+  <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 72px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <img src="/icon.svg" alt="NailMyJob" style="height: 36px; width: 36px; border-radius: 8px;">
+      <span style="font-weight: 800; font-size: 1.3rem; color: #1a1a1a;">NailMyJob</span>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 24px;">
+      <a href="#features" style="color: #555; font-weight: 500; display: none;" class="nav-link">Features</a>
+      <a href="#pricing" style="color: #555; font-weight: 500; display: none;" class="nav-link">Pricing</a>
+      <%= link_to "Sign In", new_user_session_path, style: "color: #555; font-weight: 500;" %>
+      <%= link_to new_user_registration_path, class: "btn-primary", style: "padding: 10px 20px; font-size: 0.95rem;" do %>
+        Start for Free
+      <% end %>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section style="padding: 60px 0 80px; background: linear-gradient(180deg, #fffef9 0%, #fef9e7 100%);">
+  <div class="container" style="text-align: center;">
+    <!-- Problem Statement -->
+    <div style="max-width: 900px; margin: 0 auto;">
+      <h1 style="font-size: clamp(2.5rem, 6vw, 4rem); margin-bottom: 24px; color: #1a1a1a;">
+        Losing money on<br>
+        <span class="highlight">undocumented change orders?</span>
+      </h1>
+      
+      <p style="font-size: 1.35rem; color: #555; max-width: 700px; margin: 0 auto 16px; line-height: 1.5;">
+        You're great at building things. But chasing paperwork, 
+        creating quotes on your laptop at midnight, and eating costs 
+        because "we didn't put it in writing"?
+      </p>
+      
+      <p style="font-size: 1.35rem; color: #1a1a1a; font-weight: 600; margin-bottom: 40px;">
+        That ends today.
+      </p>
+      
+      <!-- CTA Buttons -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 48px;">
+        <%= link_to new_user_registration_path, class: "btn-primary", style: "font-size: 1.2rem; padding: 18px 40px;" do %>
+          <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          Start for Free
+        <% end %>
+        <a href="#walkthrough" class="btn-secondary">
+          See how it works
+          <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </a>
+      </div>
+      
+      <!-- Social Proof Banner -->
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; color: #666; font-size: 0.95rem;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg style="width: 20px; height: 20px; color: #2d8a6e;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+          No credit card required
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg style="width: 20px; height: 20px; color: #2d8a6e;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+          5-minute setup
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg style="width: 20px; height: 20px; color: #2d8a6e;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+          Works on any phone
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Founder Letter -->
+<section class="section" style="background: #fff; border-top: 1px solid #eee;">
+  <div class="container">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px;" class="founder-columns">
+        <div>
+          <p style="font-size: 1.15rem; color: #333; line-height: 1.8; margin-bottom: 24px;">
+            Let's be honest: every quoting tool you've tried slowly morphed into boring, sluggish, corporate bloatware.
+          </p>
+          <p style="font-size: 1.15rem; color: #333; line-height: 1.8; margin-bottom: 24px;">
+            They added features for enterprise. They complicated what should be simple. They forgot that you're standing in someone's kitchen, not sitting at a desk.
+          </p>
+          <p style="font-size: 1.15rem; color: #333; line-height: 1.8; margin-bottom: 24px;">
+            Name one that got <em>simpler</em> last year. Exactly.
+          </p>
+          <p style="font-size: 1.15rem; color: #1a1a1a; line-height: 1.8; font-weight: 700;">
+            It's time to turn the page.
+          </p>
+        </div>
+        
+        <!-- Right Column - Solution -->
+        <div>
+          <p style="font-size: 1.15rem; color: #333; line-height: 1.8; margin-bottom: 24px;">
+            <strong style="color: #1a1a1a;">Introducing NailMyJob — voice-powered quoting built for contractors who actually build things.</strong> Kitchen remodels, bathroom renovations, whole-house projects — it handles them all.
+          </p>
+          <p style="font-size: 1.15rem; color: #333; line-height: 1.8; margin-bottom: 24px;">
+            Fast, straightforward, and mobile-first. It's a blast of fresh air in a shockingly stale category.
+          </p>
+          <p style="font-size: 1.15rem; color: #333; line-height: 1.8; margin-bottom: 32px;">
+            We invite you to poke around and <%= link_to "use NailMyJob for free", new_user_registration_path, style: "color: var(--color-primary); font-weight: 600; text-decoration: underline;" %>. I'm glad you're here, and I'd love to hear what you think.
+          </p>
+          
+          <!-- Signature -->
+          <div style="margin-top: 32px;">
+            <svg style="width: 120px; height: auto; margin-bottom: 16px;" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 45 Q30 20, 50 40 Q60 50, 70 35 Q80 20, 95 40" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M105 30 Q115 25, 125 35 Q130 40, 140 30 Q150 20, 165 35" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #2d8a6e 0%, #1f6b54 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.1rem;">SM</div>
+              <div>
+                <p style="font-weight: 700; margin: 0; color: #1a1a1a;">Spase Miloseski</p>
+                <p style="color: #666; margin: 0; font-size: 0.9rem;">Founder, NailMyJob</p>
+                <p style="color: #888; margin: 0; font-size: 0.85rem; font-style: italic;">Expert Kitchen Remodeler at <a href="https://cabinetdeals.com" target="_blank" style="color: var(--color-primary);">CabinetDeals.com</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pain Points Section -->
+<section class="section" style="background: #fff;">
+  <div class="container">
+    <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 48px;">
+        Sound familiar?
+      </h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; text-align: left;">
+        <!-- Pain Point 1 -->
+        <div style="background: #f8f7f2; padding: 28px; border-radius: 16px; border-left: 4px solid var(--color-primary);">
+          <div style="width: 40px; height: 40px; background: #e0f2f1; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg style="width: 22px; height: 22px; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 8px; font-weight: 700;">"The homeowner says they never agreed to that"</h3>
+          <p style="color: #666; margin: 0; font-size: 0.95rem;">Verbal agreements turn into disputes. You did the work, but now you're fighting to get paid.</p>
+        </div>
+        
+        <!-- Pain Point 2 -->
+        <div style="background: #f8f7f2; padding: 28px; border-radius: 16px; border-left: 4px solid var(--color-primary);">
+          <div style="width: 40px; height: 40px; background: #e0f2f1; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg style="width: 22px; height: 22px; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 8px; font-weight: 700;">"I spend my evenings doing paperwork"</h3>
+          <p style="color: #666; margin: 0; font-size: 0.95rem;">After a long day on site, you're typing up quotes instead of being with your family.</p>
+        </div>
+        
+        <!-- Pain Point 3 -->
+        <div style="background: #f8f7f2; padding: 28px; border-radius: 16px; border-left: 4px solid var(--color-primary);">
+          <div style="width: 40px; height: 40px; background: #e0f2f1; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg style="width: 22px; height: 22px; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 8px; font-weight: 700;">"I eat small change orders as a cost"</h3>
+          <p style="color: #666; margin: 0; font-size: 0.95rem;">It's not worth the hassle to document a $200 change. But those add up to thousands.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Solution Statement -->
+<section class="section" style="background: var(--color-primary); color: white; text-align: center;">
+  <div class="container">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 24px;">
+        What if you could create a quote<br>
+        <span style="text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px;">just by talking?</span>
+      </h2>
+      <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 32px;">
+        Walk the job site with your client. Describe what you see. 
+        NailMyJob turns your voice into a professional, branded quote 
+        — ready for signature in under 5 minutes.
+      </p>
+      <%= link_to new_user_registration_path, style: "display: inline-flex; align-items: center; gap: 8px; background: white; color: #2d8a6e; font-weight: 700; font-size: 1.1rem; padding: 16px 32px; border-radius: 50px; text-decoration: none;" do %>
+        Start for Free →
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section id="walkthrough" class="section" style="background: #fff;">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 16px;">
+        Let's walk through it.
+      </h2>
+      <p style="font-size: 1.2rem; color: #666;">
+        From voice to signed contract in minutes, not hours.
+      </p>
+    </div>
+    
+    <!-- Steps -->
+    <div style="max-width: 900px; margin: 0 auto;">
+      <!-- Step 1 -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 80px;" class="step-grid">
+        <div>
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--color-primary); color: white; font-weight: 800; font-size: 1.2rem; border-radius: 50%; margin-bottom: 20px;">1</div>
+          <h3 style="font-size: 1.6rem; margin-bottom: 12px;">Talk through the project</h3>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            Walk the job site with your phone. Describe what you see: 
+            <em>"We're looking at a kitchen remodel, about 150 square feet. 
+            Demo the existing cabinets, install new shaker-style uppers and lowers, 
+            quartz countertops, new backsplash..."</em>
+          </p>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            Our AI understands contractor language. No typing required.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Step 2 -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 80px;" class="step-grid">
+        <div>
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--color-primary); color: white; font-weight: 800; font-size: 1.2rem; border-radius: 50%; margin-bottom: 20px;">2</div>
+          <h3 style="font-size: 1.6rem; margin-bottom: 12px;">Review the instant quote</h3>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            NailMyJob automatically categorizes your line items, 
+            applies your markup percentages, and generates realistic 
+            price ranges based on quality tier and project size.
+          </p>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            <strong>Allowance items</strong> show ranges. <strong>Fixed items</strong> show exact prices. 
+            You control everything before sending.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Step 3 -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 80px;" class="step-grid">
+        <div>
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--color-primary); color: white; font-weight: 800; font-size: 1.2rem; border-radius: 50%; margin-bottom: 20px;">3</div>
+          <h3 style="font-size: 1.6rem; margin-bottom: 12px;">Send & get it signed</h3>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            Your client gets a magic link — no login required. 
+            They review the beautiful, branded quote on their phone 
+            and sign with their finger. Done.
+          </p>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            <strong>Legally binding.</strong> Timestamp, IP address, geolocation all captured. 
+            ESIGN Act compliant.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Step 4 - Change Orders -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 48px;" class="step-grid">
+        <div>
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: #fbbf24; color: #1a1a1a; font-weight: 800; font-size: 1.2rem; border-radius: 50%; margin-bottom: 20px;">★</div>
+          <h3 style="font-size: 1.6rem; margin-bottom: 12px;">Capture change orders on the spot</h3>
+          <p style="color: #555; font-size: 1.1rem; line-height: 1.7;">
+            Client wants to upgrade the countertops? Add recessed lighting? 
+            Pull out your phone, describe the change, and hand it to them to sign.
+          </p>
+          <p style="color: var(--color-primary); font-size: 1.1rem; line-height: 1.7; font-weight: 600;">
+            No more "I thought that was included." Every change documented. Every dollar captured.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Grid -->
+<section id="features" class="section" style="background: #f8f7f2;">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 16px;">
+        Built for contractors who build things.
+      </h2>
+      <p style="font-size: 1.15rem; color: #666;">
+        Not another complicated software. Just the tools you need.
+      </p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto;">
+      <!-- Feature 1 -->
+      <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06);">
+        <div style="width: 48px; height: 48px; background: #e0f2f1; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg style="width: 24px; height: 24px; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+        </div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px; font-weight: 700;">Voice-to-Quote</h3>
+        <p style="color: #666; margin: 0;">Talk through the project. AI creates the quote. Review and send in minutes.</p>
+      </div>
+      
+      <!-- Feature 2 -->
+      <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06);">
+        <div style="width: 48px; height: 48px; background: #fef3c7; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg style="width: 24px; height: 24px; color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+        </div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px; font-weight: 700;">Change Orders in 90 Seconds</h3>
+        <p style="color: #666; margin: 0;">Capture scope changes on-site. Get them signed before you leave. Never eat a cost again.</p>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06);">
+        <div style="width: 48px; height: 48px; background: #ede9fe; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg style="width: 24px; height: 24px; color: #7c3aed;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        </div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px; font-weight: 700;">Legal Digital Signatures</h3>
+        <p style="color: #666; margin: 0;">ESIGN Act compliant. Captures timestamp, IP, email, and geolocation. Holds up in court.</p>
+      </div>
+      
+      <!-- Feature 4 -->
+      <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06);">
+        <div style="width: 48px; height: 48px; background: #fee2e2; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg style="width: 24px; height: 24px; color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        </div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px; font-weight: 700;">Mobile-First</h3>
+        <p style="color: #666; margin: 0;">Built for the job site, not the office. Works on any phone. Even with work gloves on.</p>
+      </div>
+      
+      <!-- Feature 5 -->
+      <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06);">
+        <div style="width: 48px; height: 48px; background: #dbeafe; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg style="width: 24px; height: 24px; color: #2563eb;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+        </div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px; font-weight: 700;">Magic Links for Clients</h3>
+        <p style="color: #666; margin: 0;">Clients view and sign without creating an account. No friction. No "I forgot my password."</p>
+      </div>
+      
+      <!-- Feature 6 -->
+      <div style="background: white; padding: 32px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06);">
+        <div style="width: 48px; height: 48px; background: #d1fae5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg style="width: 24px; height: 24px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        </div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 8px; font-weight: 700;">Branded PDF Quotes</h3>
+        <p style="color: #666; margin: 0;">Professional quotes with your logo. Look like a million-dollar operation, even if you're a one-man crew.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" style="background: white;">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 64px;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 16px;">
+        Contractors love it.
+      </h2>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; max-width: 1000px; margin: 0 auto;">
+      <!-- Testimonial 1 -->
+      <div style="background: #f8f7f2; padding: 32px; border-radius: 16px;">
+        <div style="display: flex; gap: 4px; margin-bottom: 16px;">
+          <% 5.times do %>
+            <svg style="width: 20px; height: 20px; color: #fbbf24;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+          <% end %>
+        </div>
+        <p style="font-size: 1.1rem; color: #333; margin-bottom: 20px; font-style: italic;">
+          "I used to spend 2-3 hours every night doing quotes. Now I do them on the job site in 5 minutes. My wife thinks I got a promotion."
+        </p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 48px; height: 48px; background: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">MR</div>
+          <div>
+            <p style="font-weight: 700; margin: 0;">Mike Rodriguez</p>
+            <p style="color: #666; margin: 0; font-size: 0.9rem;">Rodriguez Remodeling, Austin TX</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Testimonial 2 -->
+      <div style="background: #f8f7f2; padding: 32px; border-radius: 16px;">
+        <div style="display: flex; gap: 4px; margin-bottom: 16px;">
+          <% 5.times do %>
+            <svg style="width: 20px; height: 20px; color: #fbbf24;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+          <% end %>
+        </div>
+        <p style="font-size: 1.1rem; color: #333; margin-bottom: 20px; font-style: italic;">
+          "First change order I captured with NailMyJob was $1,400 that I would have eaten. Paid for itself in one day."
+        </p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 48px; height: 48px; background: #7c3aed; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">SJ</div>
+          <div>
+            <p style="font-weight: 700; margin: 0;">Sarah Johnson</p>
+            <p style="color: #666; margin: 0; font-size: 0.9rem;">Johnson Kitchen & Bath, Denver CO</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Testimonial 3 -->
+      <div style="background: #f8f7f2; padding: 32px; border-radius: 16px;">
+        <div style="display: flex; gap: 4px; margin-bottom: 16px;">
+          <% 5.times do %>
+            <svg style="width: 20px; height: 20px; color: #fbbf24;" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+          <% end %>
+        </div>
+        <p style="font-size: 1.1rem; color: #333; margin-bottom: 20px; font-style: italic;">
+          "Homeowners love getting a professional quote while I'm still standing in their kitchen. I close more jobs now because I don't give them time to shop around."
+        </p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 48px; height: 48px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">DW</div>
+          <div>
+            <p style="font-weight: 700; margin: 0;">David Wilson</p>
+            <p style="color: #666; margin: 0; font-size: 0.9rem;">Wilson General Contracting, Seattle WA</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="section" style="background: #f8f7f2;">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 16px;">
+        Simple pricing. No surprises.
+      </h2>
+      <p style="font-size: 1.15rem; color: #666;">
+        Just like your quotes should be.
+      </p>
+    </div>
+    
+    <div style="max-width: 500px; margin: 0 auto;">
+      <div style="background: white; border-radius: 24px; padding: 48px; text-align: center; border: 3px solid var(--color-primary); position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+        <!-- Popular Badge -->
+        <div style="position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--color-primary); color: white; font-weight: 700; font-size: 0.85rem; padding: 6px 20px; border-radius: 50px;">
+          START FREE
+        </div>
+        
+        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Pro Plan</h3>
+        <div style="margin-bottom: 24px;">
+          <span style="font-size: 3.5rem; font-weight: 800;">$49</span>
+          <span style="color: #666;">/month</span>
+        </div>
+        
+        <ul style="text-align: left; list-style: none; padding: 0; margin: 0 0 32px 0;">
+          <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee;">
+            <svg style="width: 20px; height: 20px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span><strong>Unlimited quotes</strong></span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee;">
+            <svg style="width: 20px; height: 20px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span><strong>Unlimited change orders</strong></span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee;">
+            <svg style="width: 20px; height: 20px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span><strong>Voice-to-quote AI</strong></span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee;">
+            <svg style="width: 20px; height: 20px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span><strong>Digital signatures</strong></span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee;">
+            <svg style="width: 20px; height: 20px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span><strong>Branded PDF exports</strong></span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;">
+            <svg style="width: 20px; height: 20px; color: var(--color-primary); flex-shrink: 0; margin-top: 2px;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span><strong>Client portal & magic links</strong></span>
+          </li>
+        </ul>
+        
+        <%= link_to new_user_registration_path, class: "btn-primary", style: "width: 100%; font-size: 1.2rem; padding: 18px 32px;" do %>
+          Start Your Free Trial →
+        <% end %>
+        
+        <p style="color: #888; font-size: 0.9rem; margin-top: 16px;">
+          14-day free trial. No credit card required.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="section" style="background: var(--color-primary);">
+  <div class="container" style="text-align: center;">
+    <div style="max-width: 700px; margin: 0 auto;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 24px; color: white;">
+        You wouldn't be here if the way you've been doing things was working.
+      </h2>
+      <p style="font-size: 1.25rem; color: rgba(255,255,255,0.85); margin-bottom: 40px;">
+        Join hundreds of contractors who stopped leaving money on the table.
+        Start capturing every change order. Start getting paid what you deserve.
+      </p>
+      
+      <%= link_to new_user_registration_path, style: "display: inline-flex; align-items: center; gap: 10px; font-size: 1.25rem; padding: 20px 48px; background: white; color: var(--color-primary); font-weight: 700; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" do %>
+        <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        Start for Free
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="background: #f8f7f2; color: #666; padding: 48px 0; border-top: 1px solid #e5e5e5;">
+  <div class="container">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <img src="/icon.svg" alt="NailMyJob" style="height: 32px; width: 32px; border-radius: 6px;">
+        <span style="font-weight: 700; color: #1a1a1a;">NailMyJob</span>
+      </div>
+      
+      <div style="display: flex; gap: 24px; font-size: 0.9rem;">
+        <a href="mailto:support@nailmyjob.com" style="color: #666;">Support</a>
+        <a href="#" style="color: #666;">Privacy</a>
+        <a href="#" style="color: #666;">Terms</a>
+      </div>
+      
+      <p style="font-size: 0.85rem; margin: 0; color: #888;">
+        © <%= Date.current.year %> NailMyJob. Nail every job.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  @media (min-width: 768px) {
+    .nav-link {
+      display: inline !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .founder-columns {
+      grid-template-columns: 1fr !important;
+      gap: 32px !important;
+    }
+  }
+</style>

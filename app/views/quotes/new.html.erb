@@ -1,0 +1,190 @@
+<% content_for :title, "New Quote - NailMyJob" %>
+
+<div class="max-w-3xl mx-auto">
+  <%# Header %>
+  <div class="mb-8 text-center sm:text-left">
+    <%= link_to quotes_path, class: "inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 mb-4 transition-colors font-medium text-sm" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      Back to quotes
+    <% end %>
+    <h1 class="text-4xl mb-2">Create a new quote</h1>
+    <p class="text-xl text-stone-500 font-serif italic">Let's get this project started.</p>
+  </div>
+
+  <% unless params[:manual] %>
+    <%# Method Selection - Big friendly cards %>
+    <div class="grid md:grid-cols-2 gap-6">
+      <button type="button" 
+              class="card p-8 text-left hover:shadow-lg hover:-translate-y-1 transition-all group relative overflow-hidden"
+              data-controller="input-method"
+              data-action="click->input-method#selectVoice">
+        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+          <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.66 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 text-emerald-700 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+          </div>
+          <h3 class="text-2xl mb-2">Describe it</h3>
+          <p class="text-stone-500 leading-relaxed mb-4">Talk through the project details. We'll transcribe it and create the line items for you automatically.</p>
+          <span class="inline-flex items-center gap-1 text-emerald-700 font-bold text-sm uppercase tracking-wide">
+            Start Recording <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </span>
+        </div>
+      </button>
+
+      <%= link_to new_quote_path(manual: true), class: "card p-8 text-left hover:shadow-lg hover:-translate-y-1 transition-all group relative overflow-hidden" do %>
+        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+          <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center mb-6 text-amber-700 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          </div>
+          <h3 class="text-2xl mb-2">Fill it in</h3>
+          <p class="text-stone-500 leading-relaxed mb-4">Use our standard form to enter client details and line items manually step-by-step.</p>
+          <span class="inline-flex items-center gap-1 text-amber-700 font-bold text-sm uppercase tracking-wide">
+            Start Writing <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <%# Manual Entry Form %>
+    <%= form_with model: @quote, local: true, class: "space-y-12" do |f| %>
+      
+      <%# Section 1: Project Basics %>
+      <section>
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center font-bold text-stone-600">1</div>
+          <h2 class="text-2xl m-0">Project Basics</h2>
+        </div>
+        
+        <div class="card p-6 sm:p-8 space-y-8">
+          <div>
+            <label class="text-lg mb-4">What kind of project is this?</label>
+            <div class="grid grid-cols-3 gap-4">
+              <% Quote.template_types.keys.each do |type| %>
+                <label class="cursor-pointer group">
+                  <%= f.radio_button :template_type, type, class: "peer sr-only" %>
+                  <div class="border-2 border-stone-200 rounded-xl p-4 text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 group-hover:border-stone-300">
+                    <span class="text-4xl mb-2 block transform group-hover:scale-110 transition-transform duration-200">
+                      <%= type == "kitchen" ? "🍳" : type == "bathroom" ? "🚿" : "🔧" %>
+                    </span>
+                    <span class="font-bold text-stone-700 peer-checked:text-emerald-800"><%= type.titleize %></span>
+                  </div>
+                </label>
+              <% end %>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-lg mb-4">Roughly how big is the job?</label>
+            <div class="grid grid-cols-3 gap-4">
+              <% Quote.project_sizes.keys.each do |size| %>
+                <label class="cursor-pointer group">
+                  <%= f.radio_button :project_size, size, class: "peer sr-only" %>
+                  <div class="border-2 border-stone-200 rounded-xl p-4 text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 group-hover:border-stone-300">
+                    <span class="font-bold text-lg text-stone-700 peer-checked:text-emerald-800"><%= size.titleize %></span>
+                  </div>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <%# Section 2: Client Info %>
+      <section>
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center font-bold text-stone-600">2</div>
+          <h2 class="text-2xl m-0">The Client</h2>
+        </div>
+
+        <div class="card p-6 sm:p-8 space-y-6" 
+             data-controller="client-search" 
+             data-client-search-csrf-token-value="<%= form_authenticity_token %>">
+          
+          <div class="relative">
+            <label class="text-lg mb-2">Who is this for?</label>
+            <input type="text" 
+                   placeholder="Type a name to search or add new..."
+                   class="text-xl py-4"
+                   data-client-search-target="input"
+                   data-action="input->client-search#search">
+            
+            <div class="hidden absolute z-20 mt-2 w-full bg-white rounded-xl shadow-2xl border border-stone-200 max-h-80 overflow-auto"
+                 data-client-search-target="results">
+            </div>
+          </div>
+
+          <div class="hidden p-4 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center gap-3"
+               data-client-search-target="selectedClient">
+            <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <span class="font-medium text-emerald-900 text-lg">Client selected</span>
+          </div>
+
+          <div class="pt-6 border-t border-stone-100 space-y-6" data-client-search-target="newClientFields">
+            <div class="flex items-center gap-2 text-stone-500 mb-2">
+              <span class="text-sm font-bold uppercase tracking-wide">New Client Details</span>
+              <div class="h-px bg-stone-200 flex-1"></div>
+            </div>
+            
+            <%= f.fields_for :client_attributes do |cf| %>
+              <div>
+                <label>Full Name</label>
+                <%= cf.text_field :name, placeholder: "e.g. Jane Doe" %>
+              </div>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label>Phone Number</label>
+                  <%= cf.telephone_field :phone, placeholder: "(555) 123-4567" %>
+                </div>
+                <div>
+                  <label>Email Address</label>
+                  <%= cf.email_field :email, placeholder: "jane@example.com" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </section>
+
+      <%# Section 3: Location %>
+      <section>
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center font-bold text-stone-600">3</div>
+          <h2 class="text-2xl m-0">Project Location</h2>
+        </div>
+
+        <div class="card p-6 sm:p-8 space-y-6">
+          <div>
+            <label>Street Address</label>
+            <%= f.text_field :project_address, placeholder: "123 Maple Ave" %>
+          </div>
+          <div class="grid grid-cols-6 gap-4">
+            <div class="col-span-3">
+              <label>City</label>
+              <%= f.text_field :project_city, placeholder: "Springfield" %>
+            </div>
+            <div class="col-span-1">
+              <label>State</label>
+              <%= f.text_field :project_state, maxlength: 2, class: "uppercase text-center", placeholder: "IL" %>
+            </div>
+            <div class="col-span-2">
+              <label>ZIP</label>
+              <%= f.text_field :project_zip_code, placeholder: "62704" %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <%# Actions %>
+      <div class="flex items-center gap-4 pt-4 border-t border-stone-200 mt-8">
+        <%= f.submit "Create Quote", class: "btn-primary !text-lg !px-8 !py-3 cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" %>
+        <%= link_to "Cancel", quotes_path, class: "btn-secondary !text-lg !px-8 !py-3" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

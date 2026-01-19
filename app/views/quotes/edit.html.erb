@@ -1,0 +1,26 @@
+<% content_for :title, "Edit #{@quote.quote_number} - NailMyJob" %>
+
+<div class="max-w-5xl mx-auto">
+  <%# Sticky Header %>
+  <div class="sticky top-0 z-30 bg-[#f9f8f4] pt-4 pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-stone-200 mb-6">
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <%= link_to quote_path(@quote), class: "text-stone-400 hover:text-stone-600 transition-colors" do %>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <% end %>
+        <div>
+          <h1 class="text-xl font-bold text-stone-900">Edit Quote</h1>
+          <p class="text-sm text-stone-500"><%= @quote.quote_number %> · <%= @quote.client&.name %></p>
+        </div>
+      </div>
+      
+      <%# Sticky Total %>
+      <div class="hidden sm:flex items-center gap-4 bg-stone-900 text-white px-5 py-2 rounded-full">
+        <span class="text-stone-400 text-sm">Total:</span>
+        <span class="font-bold text-lg" data-quote-form-target="totalRange"><%= @quote.total_range %></span>
+      </div>
+    </div>
+  </div>
+
+  <%= render "form", quote: @quote, line_items: @line_items, clients: @clients %>
+</div>

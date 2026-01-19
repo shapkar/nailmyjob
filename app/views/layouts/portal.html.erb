@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <title><%= content_for(:title) || "NailMyJob" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f9f8f4">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    
+    <style>
+      :root {
+        /* Basecamp-inspired warm palette */
+        --color-page-bg: #f9f8f4; /* Warm paper */
+        --color-card-bg: #ffffff;
+        --color-text-main: #222222;
+        --color-text-muted: #666666;
+        
+        /* Accents */
+        --color-primary: #2d8a6e; /* Softer, deep emerald */
+        --color-primary-dark: #1f6b54;
+        --color-border: #e6e4dc;
+        --color-input-border: #dcdad1;
+        
+        /* Typography - System Fonts */
+        --font-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      
+      html { 
+        font-size: 18px; /* Bigger base size */
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--color-page-bg);
+        color: var(--color-text-main);
+        line-height: 1.6;
+      }
+      
+      h1, h2, h3, h4 {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #111;
+      }
+      
+      /* Human Buttons */
+      .btn-primary {
+        background-color: var(--color-primary);
+        color: white;
+        padding: 0.875rem 1.75rem;
+        border-radius: 9999px; /* Pill shape */
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-primary:hover {
+        background-color: var(--color-primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+      }
+      
+      /* Cards */
+      .card {
+        background-color: var(--color-card-bg);
+        border-radius: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.04);
+      }
+      
+      input, textarea, select {
+        font-family: var(--font-sans);
+      }
+    </style>
+  </head>
+
+  <body class="min-h-full flex flex-col">
+    <%# Simple Header %>
+    <header class="pt-6 pb-2 px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="inline-flex items-center gap-3 bg-white px-5 py-2 rounded-full border border-black/5 shadow-sm">
+          <% if current_company&.logo&.attached? %>
+            <%= image_tag current_company.logo, class: "h-8 w-auto" %>
+          <% else %>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100 text-emerald-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            </div>
+          <% end %>
+          <div class="text-left leading-tight">
+            <p class="font-bold text-sm text-stone-900"><%= current_company&.name || "NailMyJob" %></p>
+            <% if current_company&.phone.present? %>
+              <p class="text-xs text-stone-500"><%= current_company.phone %></p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <%# Flash Messages %>
+    <% if flash.any? %>
+      <div class="max-w-2xl mx-auto px-4 pt-4 w-full">
+        <% flash.each do |type, message| %>
+          <div class="rounded-xl px-4 py-3 shadow-lg border <%= type == 'alert' || type == 'error' ? 'bg-white border-red-100 text-red-800' : 'bg-white border-emerald-100 text-emerald-800' %> text-center font-medium">
+            <%= message %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# Main Content %>
+    <main class="flex-1 w-full max-w-3xl mx-auto px-4 py-8">
+      <%= yield %>
+    </main>
+
+    <%# Footer %>
+    <footer class="max-w-2xl mx-auto px-4 py-8 text-center mt-auto">
+      <p class="text-sm text-stone-400">
+        Secure document signing powered by <span class="font-bold text-emerald-700/60">NailMyJob</span>
+      </p>
+    </footer>
+  </body>
+</html>

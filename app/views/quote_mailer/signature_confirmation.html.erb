@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background-color: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .content {
+      padding: 32px 24px;
+    }
+    .quote-details {
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      color: #64748b;
+    }
+    .detail-value {
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .footer {
+      padding: 24px;
+      text-align: center;
+      color: #64748b;
+      font-size: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .footer a {
+      color: #10b981;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="success-icon">
+          <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h1>Quote Signed!</h1>
+        <p>Quote #<%= @quote.quote_number %> has been accepted</p>
+      </div>
+      
+      <div class="content">
+        <p>Great news! The quote has been signed and accepted.</p>
+        
+        <div class="quote-details">
+          <div class="detail-row">
+            <span class="detail-label">Quote Number</span>
+            <span class="detail-value"><%= @quote.quote_number %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Client</span>
+            <span class="detail-value"><%= @client.name %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Project Type</span>
+            <span class="detail-value"><%= @quote.template_type.to_s.titleize %> Remodel</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Signed On</span>
+            <span class="detail-value"><%= @quote.signed_at&.strftime("%B %d, %Y at %I:%M %p") %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Project Total</span>
+            <span class="detail-value"><%= @quote.current_total_range %></span>
+          </div>
+        </div>
+        
+        <p>This email serves as confirmation that the quote has been legally signed under the ESIGN Act.</p>
+        
+        <p>
+          Best regards,<br>
+          <strong><%= @company.name %></strong>
+        </p>
+      </div>
+      
+      <div class="footer">
+        <p>This confirmation was sent via <a href="https://nailmyjob.com">NailMyJob</a></p>
+        <p>© <%= Date.current.year %> <%= @company.name %>. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

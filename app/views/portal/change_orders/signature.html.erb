@@ -1,0 +1,117 @@
+<% content_for :title, "Sign Change Order ##{@change_order.co_number} - #{@job.company.name}" %>
+
+<div class="max-w-xl mx-auto space-y-8 pb-20" data-controller="signature">
+  <%# Header %>
+  <header class="text-center">
+    <p class="text-stone-400 text-sm font-medium uppercase tracking-wider mb-2">Review & Approve</p>
+    <h1 class="text-3xl sm:text-4xl mb-2">Change Order #<%= @change_order.co_number %></h1>
+    <p class="text-stone-500">For Job #<%= @job.job_number %></p>
+  </header>
+
+  <%# Summary Card %>
+  <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+    <div class="p-6 border-b border-stone-100">
+      <div class="flex items-center justify-between">
+        <h2 class="font-bold text-stone-900 text-lg">Change Summary</h2>
+        <p class="text-3xl font-bold <%= @change_order.amount.positive? ? 'text-emerald-600' : 'text-red-600' %>">
+          <%= @change_order.formatted_amount %>
+        </p>
+      </div>
+    </div>
+    <div class="p-6">
+      <p class="text-lg text-stone-700"><%= @change_order.description %></p>
+
+      <% if @change_order.delays_schedule %>
+        <div class="mt-4 flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="font-medium"><%= @change_order.schedule_impact_display %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Signature Form %>
+  <%= form_with url: portal_sign_change_order_path(@change_order.client_view_token), 
+                method: :post, 
+                class: "space-y-6",
+                data: { signature_target: "form" } do %>
+
+    <%# Signer Info %>
+    <div class="bg-white rounded-2xl border border-stone-200">
+      <div class="px-6 py-4 border-b border-stone-100">
+        <h2 class="font-bold text-stone-900">Your Information</h2>
+      </div>
+      <div class="p-6 space-y-5">
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Full Name</label>
+          <%= text_field_tag :signer_name, 
+              @job.client&.name, 
+              required: true,
+              placeholder: "Enter your full legal name" %>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Email Address</label>
+          <%= email_field_tag :signer_email, 
+              @job.client&.email, 
+              placeholder: "your@email.com" %>
+          <p class="text-xs text-stone-400 mt-1">We'll send a confirmation to this address</p>
+        </div>
+      </div>
+    </div>
+
+    <%# Signature Pad %>
+    <div class="bg-white rounded-2xl border border-stone-200">
+      <div class="px-6 py-4 border-b border-stone-100 flex items-center justify-between">
+        <h2 class="font-bold text-stone-900">Your Signature</h2>
+        <button type="button" 
+                class="text-sm text-red-600 hover:text-red-700 font-medium"
+                data-action="click->signature#clear">
+          Clear
+        </button>
+      </div>
+      <div class="p-6">
+        <div class="border-2 border-dashed border-stone-200 rounded-xl bg-stone-50 relative">
+          <canvas data-signature-target="canvas"
+                  class="w-full h-48 touch-none"
+                  style="touch-action: none;"></canvas>
+        </div>
+        <p class="text-xs text-stone-400 mt-2 text-center">Sign above using your finger or mouse</p>
+        <%= hidden_field_tag :signature_data, "", data: { signature_target: "data" } %>
+      </div>
+    </div>
+
+    <%# Agreement %>
+    <div class="bg-amber-50 rounded-2xl p-5">
+      <label class="flex items-start gap-3 cursor-pointer">
+        <%= check_box_tag :agree_to_terms, "1", false, required: true, class: "mt-1 w-5 h-5 rounded border-amber-300 text-emerald-600 focus:ring-emerald-500" %>
+        <span class="text-amber-800 leading-relaxed">
+          I authorize this change to my project. I understand this will adjust the project total by 
+          <strong class="<%= @change_order.amount.positive? ? 'text-emerald-700' : 'text-red-700' %>">
+            <%= @change_order.formatted_amount %>
+          </strong><%= @change_order.delays_schedule ? " and may affect the project timeline." : "." %>
+        </span>
+      </label>
+    </div>
+
+    <%# Hidden geolocation field %>
+    <%= hidden_field_tag :geolocation, "", data: { signature_target: "geolocation" } %>
+
+    <%# Submit %>
+    <div class="flex flex-col gap-3 pt-4">
+      <%= submit_tag "Approve & Sign", 
+          class: "btn-primary w-full !text-xl !py-4 cursor-pointer",
+          data: { signature_target: "submit", action: "click->signature#prepareSubmit" } %>
+
+      <%= link_to portal_change_order_path(@change_order.client_view_token), class: "btn-secondary w-full text-center" do %>
+        Cancel
+      <% end %>
+    </div>
+
+    <p class="text-xs text-stone-400 text-center">
+      By signing, you agree to the terms above. This signature is legally binding under the ESIGN Act.
+      Your IP address and timestamp will be recorded.
+    </p>
+  <% end %>
+</div>

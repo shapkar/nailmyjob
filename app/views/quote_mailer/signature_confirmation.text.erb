@@ -1,0 +1,22 @@
+<%= @company.name %>
+Quote Signed!
+================================================================================
+
+Great news! Quote #<%= @quote.quote_number %> has been signed and accepted.
+
+QUOTE DETAILS
+-------------
+Quote Number: <%= @quote.quote_number %>
+Client: <%= @client.name %>
+Project Type: <%= @quote.template_type.to_s.titleize %> Remodel
+Signed On: <%= @quote.signed_at&.strftime("%B %d, %Y at %I:%M %p") %>
+Project Total: <%= @quote.current_total_range %>
+
+This email serves as confirmation that the quote has been legally signed under the ESIGN Act.
+
+Best regards,
+<%= @company.name %>
+
+--------------------------------------------------------------------------------
+This confirmation was sent via NailMyJob (https://nailmyjob.com)
+© <%= Date.current.year %> <%= @company.name %>. All rights reserved.

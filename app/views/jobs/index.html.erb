@@ -1,0 +1,109 @@
+<% content_for :title, "Jobs - NailMyJob" %>
+
+<div class="max-w-3xl mx-auto">
+  <header class="mb-6">
+    <h1 class="text-3xl sm:text-4xl mb-1">Jobs</h1>
+    <p class="text-stone-500">
+      <% if @jobs.respond_to?(:total_count) %>
+        <%= @jobs.total_count %> <%= "job".pluralize(@jobs.total_count) %>
+      <% else %>
+        <%= @jobs.size %> <%= "job".pluralize(@jobs.size) %>
+      <% end %>
+    </p>
+  </header>
+
+  <%# Status Tabs %>
+  <nav class="flex items-center gap-1 mb-6 bg-white p-1.5 rounded-xl w-fit border border-stone-200 shadow-sm">
+    <%= link_to "All", jobs_path, 
+        class: "px-4 py-2 rounded-lg text-sm font-bold transition-all #{params[:status].blank? ? 'bg-[#2d8a6e] text-white shadow-sm' : 'text-stone-500 hover:bg-stone-100 hover:text-stone-900'}" %>
+    <%= link_to "Active", jobs_path(status: :active), 
+        class: "px-4 py-2 rounded-lg text-sm font-bold transition-all #{params[:status] == 'active' ? 'bg-[#2d8a6e] text-white shadow-sm' : 'text-stone-500 hover:bg-stone-100 hover:text-stone-900'}" %>
+    <%= link_to "On Hold", jobs_path(status: :on_hold), 
+        class: "px-4 py-2 rounded-lg text-sm font-bold transition-all #{params[:status] == 'on_hold' ? 'bg-[#2d8a6e] text-white shadow-sm' : 'text-stone-500 hover:bg-stone-100 hover:text-stone-900'}" %>
+    <%= link_to "Completed", jobs_path(status: :completed), 
+        class: "px-4 py-2 rounded-lg text-sm font-bold transition-all #{params[:status] == 'completed' ? 'bg-[#2d8a6e] text-white shadow-sm' : 'text-stone-500 hover:bg-stone-100 hover:text-stone-900'}" %>
+  </nav>
+
+  <% if @jobs.any? %>
+    <div class="bg-white rounded-xl border border-stone-200 divide-y divide-stone-100 overflow-hidden">
+      <% @jobs.each do |job| %>
+        <%= link_to job, class: "block p-5 hover:bg-stone-50 transition-colors group" do %>
+          <div class="flex items-start justify-between gap-4">
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <h3 class="text-lg font-bold text-stone-900 group-hover:text-emerald-800 transition-colors truncate">
+                  <%= job.client&.name || "No client" %>
+                </h3>
+                <% if job.active? %>
+                  <span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Active</span>
+                <% elsif job.on_hold? %>
+                  <span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">On Hold</span>
+                <% elsif job.completed? %>
+                  <span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Completed</span>
+                <% elsif job.cancelled? %>
+                  <span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-stone-100 text-stone-500">Cancelled</span>
+                <% end %>
+              </div>
+              <p class="text-sm text-stone-500">
+                <%= job.job_number %> · <%= job.quote.template_type.to_s.titleize %>
+                <% if job.project_city.present? %>
+                  · <%= job.project_city %>
+                <% end %>
+              </p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-stone-900"><%= job.current_total_range %></p>
+              <% if job.start_date.present? %>
+                <p class="text-xs text-stone-400">Started <%= job.start_date.strftime("%b %d") %></p>
+              <% else %>
+                <p class="text-xs text-stone-400">Not started</p>
+              <% end %>
+            </div>
+          </div>
+          
+          <% if job.change_orders_total.to_i > 0 %>
+            <div class="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between">
+              <span class="text-sm text-stone-500"><%= job.change_orders.signed.count %> change <%= "order".pluralize(job.change_orders.signed.count) %></span>
+              <span class="text-sm font-bold text-emerald-600">
+                +<%= number_to_currency(job.change_orders_total, precision: 0) %>
+              </span>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if defined?(@pagy) && @pagy.pages > 1 %>
+      <div class="flex items-center justify-center gap-4 pt-6">
+        <% if @pagy.prev %>
+          <%= link_to jobs_path(page: @pagy.prev, status: params[:status]), class: "text-sm font-bold text-stone-500 hover:text-stone-900" do %>
+            ← Previous
+          <% end %>
+        <% end %>
+        
+        <span class="text-sm text-stone-400">
+          Page <%= @pagy.page %> of <%= @pagy.pages %>
+        </span>
+        
+        <% if @pagy.next %>
+          <%= link_to jobs_path(page: @pagy.next, status: params[:status]), class: "text-sm font-bold text-stone-500 hover:text-stone-900" do %>
+            Next →
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="bg-white rounded-xl border border-stone-200 p-10 text-center">
+      <div class="w-14 h-14 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+      </div>
+      <h3 class="text-xl font-bold text-stone-900 mb-2">No jobs yet</h3>
+      <p class="text-stone-500 mb-6">
+        Jobs are created when a quote is signed by the client.
+      </p>
+      <%= link_to quotes_path, class: "btn-secondary" do %>
+        View Quotes
+      <% end %>
+    </div>
+  <% end %>
+</div>

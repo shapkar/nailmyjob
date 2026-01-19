@@ -1,0 +1,223 @@
+<% content_for :title, "Quote ##{@quote.quote_number}" %>
+
+<div class="space-y-10 pb-20">
+  
+  <%# Status Banner - Top & Center %>
+  <% if @quote.signed? %>
+    <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <h2 class="text-2xl text-emerald-900 mb-1">Quote Accepted</h2>
+      <p class="text-emerald-700">Signed on <%= @quote.signed_at&.strftime("%B %d, %Y") %></p>
+    </div>
+  <% elsif @quote.expired? %>
+    <div class="bg-amber-50 border border-amber-100 rounded-2xl p-6 text-center">
+      <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      </div>
+      <h2 class="text-2xl text-amber-900 mb-1">Quote Expired</h2>
+      <p class="text-amber-700">Please contact us for an updated quote.</p>
+    </div>
+  <% end %>
+
+  <%# Header - Document Style %>
+  <div class="text-center space-y-4">
+    <p class="text-stone-400 font-mono text-sm tracking-widest uppercase">Quote #<%= @quote.quote_number %></p>
+    <h1 class="text-4xl sm:text-6xl text-stone-900 leading-tight">
+      <%= @quote.template_type.to_s.titleize %> Remodel
+    </h1>
+    <div class="text-lg text-stone-500">
+      <p>Prepared for <strong class="text-stone-900"><%= @quote.client&.name %></strong></p>
+      <% if @quote.project_full_address.present? %>
+        <p class="mt-1"><%= @quote.project_full_address %></p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Total Price - Friendly & Clear %>
+  <div class="rounded-2xl p-8 sm:p-10 text-center bg-white border border-stone-200 shadow-sm">
+    <p class="text-stone-400 font-medium text-sm mb-4">Your project investment</p>
+    <p class="text-4xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-2">
+      <%= @quote.total_range %>
+    </p>
+    <p class="text-stone-500 text-sm">Estimated range based on your selections</p>
+    
+    <% if @quote.timeline_estimate.present? || (@quote.valid_days.present? && !@quote.signed? && !@quote.expired?) %>
+      <div class="flex flex-wrap justify-center gap-4 text-sm mt-6 pt-6 border-t border-stone-100">
+        <% if @quote.timeline_estimate.present? %>
+          <span class="flex items-center gap-2 text-stone-500 bg-stone-50 px-3 py-1.5 rounded-full">
+            <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <%= @quote.timeline_estimate %>
+          </span>
+        <% end %>
+        <% if @quote.valid_days.present? && !@quote.signed? && !@quote.expired? %>
+          <span class="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Valid for <%= @quote.days_until_expiry %> more days
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%# What's Included %>
+  <section class="max-w-2xl mx-auto">
+    <div class="flex items-center gap-4 mb-8">
+      <div class="h-px bg-stone-200 flex-1"></div>
+      <h2 class="text-2xl text-stone-400 font-medium uppercase tracking-widest">What's Included</h2>
+      <div class="h-px bg-stone-200 flex-1"></div>
+    </div>
+    
+    <div class="space-y-6">
+      <% @line_items.each do |item| %>
+        <div class="group">
+          <div class="flex items-baseline justify-between mb-2">
+            <h3 class="text-xl font-bold text-stone-900"><%= item.description %></h3>
+            <span class="text-lg font-mono font-medium text-stone-500 shrink-0 border-b border-stone-200 pb-1"><%= item.range_display %></span>
+          </div>
+          <div class="flex gap-3">
+            <% if item.quality_tier.present? && item.quality_tier != "better" %>
+              <span class="text-xs font-bold uppercase tracking-wide text-stone-400 bg-stone-100 px-2 py-1 rounded"><%= item.quality_tier.to_s.titleize %> Quality</span>
+            <% end %>
+            <% if item.is_allowance %>
+              <span class="text-xs font-bold uppercase tracking-wide text-amber-600 bg-amber-50 px-2 py-1 rounded">Allowance Item</span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <%# Change Orders Section %>
+  <% if @signed_change_orders.any? || @pending_change_orders.any? %>
+    <section class="max-w-2xl mx-auto pt-12">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="h-px bg-stone-200 flex-1"></div>
+        <h2 class="text-2xl text-stone-400 font-medium uppercase tracking-widest">Change Orders</h2>
+        <div class="h-px bg-stone-200 flex-1"></div>
+      </div>
+
+      <% if @pending_change_orders.any? %>
+        <div class="bg-amber-50 border-2 border-amber-100 rounded-2xl p-6 mb-8">
+          <h3 class="text-amber-800 font-bold mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            Waiting for Approval
+          </h3>
+          <div class="space-y-4">
+            <% @pending_change_orders.each do |co| %>
+              <div class="bg-white rounded-xl p-5 shadow-sm">
+                <div class="flex justify-between items-start gap-4 mb-4">
+                  <div>
+                    <span class="text-xs font-bold uppercase tracking-wide text-amber-500 mb-1 block">CO #<%= co.co_number %></span>
+                    <p class="font-bold text-stone-900"><%= co.description %></p>
+                  </div>
+                  <span class="font-mono font-bold text-lg"><%= co.formatted_amount %></span>
+                </div>
+                <%= link_to portal_change_order_path(co.client_view_token), class: "btn-primary w-full !text-sm !py-2.5" do %>
+                  Review & Approve
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @signed_change_orders.any? %>
+        <div class="space-y-6">
+          <% @signed_change_orders.each do |co| %>
+            <div class="flex items-center justify-between opacity-75">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wide text-emerald-600">Approved</span>
+                <p class="font-medium text-stone-900"><%= co.description %></p>
+              </div>
+              <span class="font-mono text-stone-500"><%= co.formatted_amount %></span>
+            </div>
+          <% end %>
+          
+          <div class="flex items-center justify-between pt-6 border-t border-stone-200">
+            <span class="font-bold text-stone-900">Adjusted Total</span>
+            <span class="font-bold text-2xl text-stone-900"><%= @quote.current_total_range %></span>
+          </div>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
+
+  <%# Terms & Notes %>
+  <% if @quote.notes.present? || @quote.terms.present? %>
+    <section class="max-w-2xl mx-auto pt-12">
+      <div class="card bg-stone-50 border-none p-8 space-y-8">
+        <% if @quote.notes.present? %>
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wide text-stone-400 mb-3">Notes</h3>
+            <div class="prose prose-stone">
+              <%= simple_format @quote.notes %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if @quote.payment_terms.present? %>
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wide text-stone-400 mb-3">Payment Terms</h3>
+            <p class="text-stone-700"><%= @quote.payment_terms %></p>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <%# Signature Section %>
+  <% unless @quote.signed? || @quote.expired? %>
+    <section id="sign-section" class="max-w-xl mx-auto pt-12" data-controller="signature">
+      <div class="card p-8 border-2 border-stone-100 shadow-xl">
+        <h2 class="text-3xl font-bold text-center mb-2">Accept & Start</h2>
+        <p class="text-stone-500 text-center mb-8">Sign below to approve this quote and get things moving.</p>
+
+        <%= form_with url: portal_sign_quote_path(@quote.client_view_token), method: :post, data: { signature_target: "form" } do %>
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold uppercase tracking-wide text-stone-400">Signature</label>
+              <button type="button" class="text-xs font-bold text-stone-400 hover:text-stone-600 underline" data-action="click->signature#clear">Clear</button>
+            </div>
+            <div class="border-2 border-dashed border-stone-200 rounded-2xl bg-stone-50 relative h-48 cursor-crosshair hover:border-stone-300 transition-colors">
+              <canvas data-signature-target="canvas" class="w-full h-full touch-none"></canvas>
+            </div>
+            <%= hidden_field_tag :signature_data, "", data: { signature_target: "data" } %>
+          </div>
+
+          <label class="flex gap-4 p-4 rounded-xl hover:bg-stone-50 transition-colors mb-6 cursor-pointer">
+            <%= check_box_tag :agree_to_terms, "1", false, required: true, class: "mt-1 w-5 h-5 rounded border-stone-300 text-emerald-600 focus:ring-emerald-500" %>
+            <span class="text-sm text-stone-600 leading-relaxed">
+              I agree to the terms listed above and understand that final costs may vary based on material selections.
+            </span>
+          </label>
+
+          <%= hidden_field_tag :geolocation, "", data: { signature_target: "geolocation" } %>
+
+          <%= submit_tag "Sign & Accept Quote", 
+              class: "btn-primary w-full !text-xl !py-4 shadow-lg hover:shadow-xl transform hover:-translate-y-1 cursor-pointer",
+              data: { signature_target: "submit", action: "click->signature#prepareSubmit" } %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <%# Contact %>
+  <section class="text-center pt-12">
+    <p class="text-stone-400 text-sm mb-4">Questions?</p>
+    <div class="inline-flex gap-4">
+      <% if @quote.company.phone.present? %>
+        <%= link_to "tel:#{@quote.company.phone}", class: "text-stone-600 hover:text-emerald-700 font-medium transition-colors" do %>
+          Call us at <%= @quote.company.phone %>
+        <% end %>
+      <% end %>
+      <% if @quote.company.email.present? %>
+        <span class="text-stone-300">•</span>
+        <%= link_to "mailto:#{@quote.company.email}", class: "text-stone-600 hover:text-emerald-700 font-medium transition-colors" do %>
+          Email us
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+</div>
