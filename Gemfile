@@ -23,7 +23,7 @@ gem "bcrypt", "~> 3.1.7"
 
 # Background job processing
 gem "sidekiq", "~> 7.3"
-gem "sidekiq-scheduler", "~> 5.0"
+gem "sidekiq-scheduler", "~> 6.0"
 
 # PDF Generation
 gem "prawn", "~> 2.5"
