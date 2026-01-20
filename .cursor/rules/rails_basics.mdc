@@ -1,4 +1,8 @@
 ---
+alwaysApply: true
+---
+
+---
 description: Rails & Turbo coding practices
 globs: **/*
 alwaysApply: true

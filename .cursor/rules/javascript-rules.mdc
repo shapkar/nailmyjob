@@ -1,0 +1,99 @@
+---
+globs: *.js
+alwaysApply: false
+---
+
+You are writing JavaScript in a clear, explicit, UI-oriented style (Stimulus / frontend logic).
+
+General principles:
+
+- Favor clarity over brevity
+- Optimize for readability by future maintainers
+- Code should read top-to-bottom like a narrative
+- Do not change external behavior when refactoring
+
+Control flow:
+
+- Prefer early returns (guard clauses) to avoid nesting
+- Guard clauses must always use block syntax
+
+  ❌ if (condition) return;
+  ✅ if (condition) {
+  return;
+  }
+
+- Maximum nesting depth: 2
+- Use `else if` only when mutually exclusive logic is tightly coupled
+
+Whitespace and visual structure:
+
+- Insert a blank line:
+  - After guard clauses when more logic follows
+  - Between logically distinct operations
+  - Before every `return` statement
+  - Between DOM mutation steps that represent different actions
+
+Examples:
+
+- Separate `.remove()` and `.add()` calls with a blank line
+- Separate setup logic from output logic with a blank line
+
+Function layout:
+
+- Functions should follow this order:
+
+  1. Guard clauses
+  2. Local setup / derived values
+  3. Main logic
+  4. Return (visually separated)
+
+- Keep functions focused on a single responsibility
+- Extract helpers when logic becomes conditional-heavy or repetitive
+
+Variables and declarations:
+
+- Prefer `const` by default
+- Use `let` only when reassignment is required
+- Never use `var`
+- Name variables descriptively, even if slightly longer
+
+Conditionals:
+
+- Prefer explicit conditions over clever expressions
+- Avoid deeply chained logical expressions when they reduce clarity
+- Reuse semantic helper methods (e.g. `hasKeywords`, `isCompleted`)
+
+Arrays and objects:
+
+- Use lookup maps for state-based logic instead of large conditionals
+- Visually separate object definitions from their usage
+
+Async and side effects:
+
+- Keep async functions linear and readable
+- Handle failure cases early
+- Log errors clearly without swallowing them
+
+DOM and UI updates:
+
+- Treat DOM mutations as semantic steps
+- Group related DOM changes together
+- Separate state removal from state addition
+- Prefer readable multi-line classList calls over compressed one-liners
+
+Formatting:
+
+- Always use curly braces for control structures
+- One statement per line
+- No single-line control flow
+- Consistent indentation and spacing
+
+Comments:
+
+- Avoid obvious comments
+- Add comments only when explaining intent or non-obvious decisions
+
+Output rules:
+
+- Do not introduce new dependencies
+- Preserve the existing style and tone of the file
