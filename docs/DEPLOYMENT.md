@@ -94,12 +94,10 @@ ufw enable
 
 | Secret Name | Description |
 |-------------|-------------|
-| `POSTGRES_USER` | Database username (e.g., `nailmyjob`) |
-| `POSTGRES_PASSWORD` | Strong database password |
+| `DATABASE_URL` | Supabase PostgreSQL connection string |
 | `SECRET_KEY_BASE` | Rails secret (run `rails secret`) |
 | `MAILGUN_API_KEY` | Your Mailgun API key |
-| `MAILGUN_DOMAIN` | Your Mailgun domain |
-| `MAILGUN_SMTP_PASSWORD` | Mailgun SMTP password |
+| `MAILGUN_DOMAIN` | Your Mailgun domain (e.g., `hey.nailmyjob.com`) |
 | `OPENAI_API_KEY` | OpenAI API key (optional) |
 | `DEEPGRAM_API_KEY` | Deepgram API key (optional) |
 
@@ -132,13 +130,11 @@ Add these **Variables**:
 | Variable | Value |
 |----------|-------|
 | `APP_HOST` | Your domain (e.g., `app.nailmyjob.com`) |
-| `MAILER_FROM_ADDRESS` | `NailMyJob <noreply@yourdomain.com>` |
-| `BWS_POSTGRES_USER_ID` | Bitwarden secret ID |
-| `BWS_POSTGRES_PASSWORD_ID` | Bitwarden secret ID |
+| `MAILER_FROM_ADDRESS` | `Spase <spase@hey.nailmyjob.com>` |
+| `BWS_DATABASE_URL_ID` | Bitwarden secret ID for Supabase connection string |
 | `BWS_SECRET_KEY_BASE_ID` | Bitwarden secret ID |
 | `BWS_MAILGUN_API_KEY_ID` | Bitwarden secret ID |
 | `BWS_MAILGUN_DOMAIN_ID` | Bitwarden secret ID |
-| `BWS_MAILGUN_SMTP_PASSWORD_ID` | Bitwarden secret ID |
 
 ### Generate SSH Key for Deployment
 

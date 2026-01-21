@@ -59,8 +59,8 @@ Rails.application.configure do
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "nailmyjob.com"), protocol: "https" }
 
-  # Use Mailgun SMTP for email delivery (configured in initializer)
-  config.action_mailer.delivery_method = :smtp
+  # Use Mailgun API for email delivery (configured in config/initializers/mailgun.rb)
+  # The initializer sets delivery_method to :mailgun when MAILGUN_API_KEY is present
   config.action_mailer.perform_deliveries = true
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

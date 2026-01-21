@@ -61,15 +61,18 @@ For local development, you can still use individual variables:
 
 ---
 
-## Email (Mailgun)
+## Email (Mailgun API)
+
+We use the **Mailgun API** for email delivery (recommended by Mailgun over SMTP).
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `MAILGUN_API_KEY` | Mailgun private API key | `key-abc123...` |
-| `MAILGUN_DOMAIN` | Mailgun sending domain | `mg.nailmyjob.com` |
-| `MAILGUN_SMTP_PASSWORD` | SMTP password (usually same as API key) | `key-abc123...` |
+| `MAILGUN_API_KEY` | Mailgun private API key | `key-abc123...` or long string |
+| `MAILGUN_DOMAIN` | Mailgun sending domain | `hey.nailmyjob.com` |
 | `MAILGUN_REGION` | Mailgun region (`us` or `eu`) | `us` |
-| `MAILER_FROM_ADDRESS` | Default from address | `NailMyJob <noreply@nailmyjob.com>` |
+| `MAILER_FROM_ADDRESS` | Default from address | `Spase <spase@hey.nailmyjob.com>` |
+
+**Note:** We use the Mailgun API method (not SMTP). You only need `MAILGUN_API_KEY` - no SMTP password required.
 
 ---
 
@@ -120,10 +123,9 @@ bws://nailmyjob/DATABASE_URL     # Full Supabase connection string
 # Rails
 bws://nailmyjob/SECRET_KEY_BASE
 
-# Mailgun
+# Mailgun (API method - no SMTP password needed)
 bws://nailmyjob/MAILGUN_API_KEY
 bws://nailmyjob/MAILGUN_DOMAIN
-bws://nailmyjob/MAILGUN_SMTP_PASSWORD
 
 # AI Services
 bws://nailmyjob/OPENAI_API_KEY
@@ -145,9 +147,8 @@ You'll also need to set these **repository variables** in GitHub (Settings → S
 | `BWS_SECRET_KEY_BASE_ID` | Bitwarden secret ID for SECRET_KEY_BASE |
 | `BWS_MAILGUN_API_KEY_ID` | Bitwarden secret ID for MAILGUN_API_KEY |
 | `BWS_MAILGUN_DOMAIN_ID` | Bitwarden secret ID for MAILGUN_DOMAIN |
-| `BWS_MAILGUN_SMTP_PASSWORD_ID` | Bitwarden secret ID for MAILGUN_SMTP_PASSWORD |
 | `APP_HOST` | Your app domain (e.g., `app.nailmyjob.com`) |
-| `MAILER_FROM_ADDRESS` | Email from address |
+| `MAILER_FROM_ADDRESS` | Email from address (default: `Spase <spase@hey.nailmyjob.com>`) |
 
 ---
 

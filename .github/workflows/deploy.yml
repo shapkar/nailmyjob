@@ -158,10 +158,9 @@ jobs:
           # Rails
           echo "SECRET_KEY_BASE=$(bws secret get ${{ vars.BWS_SECRET_KEY_BASE_ID }} | jq -r '.value')" >> .env.production
           
-          # Mailgun
+          # Mailgun (using API delivery method - recommended by Mailgun)
           echo "MAILGUN_API_KEY=$(bws secret get ${{ vars.BWS_MAILGUN_API_KEY_ID }} | jq -r '.value')" >> .env.production
           echo "MAILGUN_DOMAIN=$(bws secret get ${{ vars.BWS_MAILGUN_DOMAIN_ID }} | jq -r '.value')" >> .env.production
-          echo "MAILGUN_SMTP_PASSWORD=$(bws secret get ${{ vars.BWS_MAILGUN_SMTP_PASSWORD_ID }} | jq -r '.value')" >> .env.production
           
           # AI Services (optional)
           if [ -n "${{ vars.BWS_OPENAI_API_KEY_ID }}" ]; then

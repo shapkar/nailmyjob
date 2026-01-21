@@ -40,15 +40,10 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
-  # Use letter_opener to preview emails in browser (if gem is available)
-  # Otherwise use :test or :smtp if Mailgun is configured
-  if ENV["MAILGUN_API_KEY"].present?
-    # Use real Mailgun in development if configured
-    config.action_mailer.delivery_method = :smtp
-  else
-    # Default to :test for development without Mailgun
-    config.action_mailer.delivery_method = :test
-  end
+  # Use :test delivery method by default in development
+  # If MAILGUN_API_KEY is set, the mailgun.rb initializer will override this
+  # to use the Mailgun API delivery method
+  config.action_mailer.delivery_method = :test
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

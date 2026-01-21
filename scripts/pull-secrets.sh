@@ -74,15 +74,13 @@ fetch_secret() {
 
 # Required secrets
 echo "📦 Fetching required secrets..."
-fetch_secret "${BWS_POSTGRES_USER_ID}" "POSTGRES_USER" true
-fetch_secret "${BWS_POSTGRES_PASSWORD_ID}" "POSTGRES_PASSWORD" true
+fetch_secret "${BWS_DATABASE_URL_ID}" "DATABASE_URL" true
 fetch_secret "${BWS_SECRET_KEY_BASE_ID}" "SECRET_KEY_BASE" true
 
-# Email (Mailgun)
+# Email (Mailgun API - no SMTP password needed)
 echo "📧 Fetching email secrets..."
 fetch_secret "${BWS_MAILGUN_API_KEY_ID}" "MAILGUN_API_KEY"
 fetch_secret "${BWS_MAILGUN_DOMAIN_ID}" "MAILGUN_DOMAIN"
-fetch_secret "${BWS_MAILGUN_SMTP_PASSWORD_ID}" "MAILGUN_SMTP_PASSWORD"
 
 # AI Services (optional)
 echo "🤖 Fetching AI service secrets..."

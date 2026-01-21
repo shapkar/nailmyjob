@@ -93,9 +93,9 @@ AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 AWS_BUCKET=nailmyjob-files
 AWS_REGION=us-east-1
 
-# Email (Mailgun)
+# Email (Mailgun API - recommended over SMTP)
 MAILGUN_API_KEY=your_mailgun_api_key
-MAILGUN_DOMAIN=mail.yourdomain.com
+MAILGUN_DOMAIN=hey.nailmyjob.com
 ```
 
 ## Deployment

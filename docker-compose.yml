@@ -54,8 +54,7 @@ services:
       # Mailgun configuration (optional for development)
       MAILGUN_API_KEY: ${MAILGUN_API_KEY:-}
       MAILGUN_DOMAIN: ${MAILGUN_DOMAIN:-}
-      MAILGUN_SMTP_PASSWORD: ${MAILGUN_SMTP_PASSWORD:-}
-      MAILER_FROM_ADDRESS: ${MAILER_FROM_ADDRESS:-NailMyJob <noreply@nailmyjob.com>}
+      MAILER_FROM_ADDRESS: ${MAILER_FROM_ADDRESS:-Spase <spase@hey.nailmyjob.com>}
     stdin_open: true
     tty: true
     command: bin/dev
@@ -82,8 +81,7 @@ services:
       # Mailgun configuration (optional for development)
       MAILGUN_API_KEY: ${MAILGUN_API_KEY:-}
       MAILGUN_DOMAIN: ${MAILGUN_DOMAIN:-}
-      MAILGUN_SMTP_PASSWORD: ${MAILGUN_SMTP_PASSWORD:-}
-      MAILER_FROM_ADDRESS: ${MAILER_FROM_ADDRESS:-NailMyJob <noreply@nailmyjob.com>}
+      MAILER_FROM_ADDRESS: ${MAILER_FROM_ADDRESS:-Spase <spase@hey.nailmyjob.com>}
     command: bundle exec sidekiq
 
 volumes:
