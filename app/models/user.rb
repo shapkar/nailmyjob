@@ -6,6 +6,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # Virtual attribute for registration
+  attr_accessor :company_name
+
   # Associations
   belongs_to :company, optional: true
   has_many :quotes, dependent: :nullify
@@ -19,9 +22,11 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :first_name, presence: true, on: :update
   validates :last_name, presence: true, on: :update
+  validates :company_name, presence: true, on: :create
 
   # Callbacks
   before_create :generate_default_settings
+  after_create :create_company_from_name
 
   # Instance Methods
   def full_name
@@ -51,5 +56,12 @@ class User < ApplicationRecord
         auto_save_interval: 30
       }
     }
+  end
+
+  def create_company_from_name
+    return if company.present? || company_name.blank?
+
+    new_company = Company.create!(name: company_name, email: email)
+    update_column(:company_id, new_company.id)
   end
 end

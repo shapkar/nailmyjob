@@ -8,17 +8,21 @@
     <meta name="theme-color" content="#f9f8f4">
     
     <link rel="manifest" href="<%= pwa_manifest_path %>">
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/nailmyjob-logo.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="NailMyJob">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%# Distinctive, readable fonts - System stack %>
+    <%# Fonts - System stack + DM Sans for wordmark %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&display=swap" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -169,7 +173,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-8">
               <%= link_to dashboard_path, class: "group" do %>
-                <span class="text-2xl font-black tracking-tight font-serif text-emerald-800">NailMyJob</span>
+                <span style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.4rem; color: #1a1a1a; letter-spacing: -0.02em;"><%= current_company&.name.presence || "nailmyjob" %></span>
               <% end %>
 
               <nav class="hidden sm:flex items-center gap-1 bg-white p-1 rounded-full border border-stone-200 shadow-sm">
